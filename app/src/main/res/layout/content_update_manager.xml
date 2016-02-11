@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="#e8cff6"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_update_manager"
+    tools:context="com.example.aviga_000.bookstoreandroid.UpdateManagerActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Update Manager"
+            android:id="@+id/textView32"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#52024d"
+            android:textStyle="bold|italic" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="First name:"
+            android:textColorHint="@android:color/holo_red_light"
+            android:ems="10"
+            android:id="@+id/firstNameText"
+            android:layout_gravity="center_horizontal"
+            android:autoText="false"
+            android:background="@drawable/back"
+            android:textIsSelectable="false"
+            android:textColor="#f01313" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="Last name:"
+            android:textColorHint="@android:color/holo_red_light"
+            android:ems="10"
+            android:background="@drawable/back"
+            android:id="@+id/lastNameText"
+            android:textColor="#e82929" />
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/phoneText"
+            android:background="@drawable/back"
+            android:hint="Phone number"
+            android:textColorHint="@android:color/holo_red_light"
+            android:textColor="#e51717" />
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/emailText"
+            android:hint="Email:"
+            android:background="@drawable/back"
+            android:textColorHint="@android:color/holo_red_light"
+            android:textColor="@android:color/holo_red_dark" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cityText"
+            android:layout_gravity="center_horizontal"
+            android:hint="City:"
+            android:background="@drawable/back"
+            android:textColorHint="@android:color/holo_red_light"
+            android:textColor="#e31e1e" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/streetText"
+            android:hint="Street:"
+            android:background="@drawable/back"
+            android:textColorHint="@android:color/holo_red_light"
+            android:textColor="#d72323" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:hint="@+id/buildingText"
+            android:layout_gravity="center_horizontal"
+            android:text="Building number: "
+            android:background="@drawable/back"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/houseText"
+            android:hint="House number: "
+            android:textColorHint="@android:color/holo_red_light"
+            android:background="@drawable/back"
+            android:textColor="#dd2020" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/passwordText"
+            android:layout_gravity="center_horizontal"
+            android:hint="Password: "
+            android:textColorHint="@android:color/holo_red_light"
+            android:background="@drawable/back"
+            android:textColor="#d72626" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Password must be at least 6 charcters long and contain digits uppercase &amp; lowercase letters"
+            android:id="@+id/textViewPassword"
+            android:layout_gravity="right" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:ems="10"
+            android:id="@+id/zipCodeText"
+            android:hint="Zip code: "
+            android:textColorHint="@android:color/holo_red_light"
+            android:background="@drawable/back"
+            android:textColor="#d42e2e" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update"
+            android:id="@+id/newBuyerButton"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:background="@drawable/my_button"
+            android:onClick="updateOnClick" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="All the fields that are red must be filled in order to sign in"
+            android:id="@+id/textViewFields" />
+
+    </LinearLayout>
+</RelativeLayout>
+</ScrollView>
+

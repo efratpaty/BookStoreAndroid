@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_orders"
+    android:background="#e8cff6"
+    tools:context="com.example.aviga_000.bookstoreandroid.OrdersActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Orders"
+            android:id="@+id/textView32"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#52024d"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My purchases:"
+            android:textColor="#52024d"
+            android:id="@+id/textView4" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="223dp"
+            android:id="@+id/purchaseListView" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My sales"
+            android:textColor="#52024d"
+            android:id="@+id/textView3" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saleListView"
+            android:layout_gravity="center_horizontal" />
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px" />
+    </LinearLayout>
+</RelativeLayout>

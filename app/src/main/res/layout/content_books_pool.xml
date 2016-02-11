@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_books_pool"
+    android:background="#e8cff6"
+
+    tools:context="com.example.aviga_000.bookstoreandroid.BooksPoolActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Book Directory"
+            android:id="@+id/textView32"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#52024d"
+            android:textStyle="bold|italic" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text=""
+                android:hint = "Name:"
+                android:ems="10"
+                android:id="@+id/bookPoolNameText"
+                android:background="@drawable/back"
+                android:textColorHint="#52024d"
+                android:layout_gravity="center_horizontal" />
+
+            <EditText
+                android:layout_width="122dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text=""
+                android:hint = "Author:"
+                android:background="@drawable/back"
+                android:textColorHint="#52024d"
+                android:ems="10"
+                android:id="@+id/bookPoolAuthorText"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <AutoCompleteTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:hint = "Subject:"
+                android:background="@drawable/back"
+                android:textColorHint="#52024d"
+                android:id="@+id/bookPoolSubjectTextView"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:weightSum="1"
+            android:id="@+id/header">
+
+            <EditText
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:hint = "Price:"
+                android:background="@drawable/back"
+                android:textColorHint="#52024d"
+                android:ems="10"
+                android:id="@+id/bookPoolPriceText"
+                android:layout_gravity="center_horizontal"
+                android:inputType="numberDecimal" />
+
+            <AutoCompleteTextView
+                android:layout_width="94dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back"
+                android:textColorHint="#52024d"
+                android:text=""
+                android:hint = "Condition:"
+                android:layout_gravity="center_horizontal"
+
+                android:id="@+id/bookPoolConditiononditionTextView" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageView2"
+                android:src="@android:drawable/ic_menu_search"
+                android:onClick="onSearchBookClick"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Book"
+                android:id="@+id/newButton"
+                android:textColor="#ffffff"
+                android:background="@drawable/my_button"/>
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:id="@+id/bookListView"
+            android:layout_gravity="center_horizontal"
+            android:nestedScrollingEnabled="true"
+            android:smoothScrollbar="true" />
+
+    </LinearLayout>
+
+</RelativeLayout>

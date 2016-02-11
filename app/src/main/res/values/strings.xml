@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">BookStoreAndroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_entrance">EntranceActivity</string>
+    <string name="textPassword">password</string>
+    <string name="emailText">email</string>
+    <string name="emailUserName"></string>
+    <string name="userPassword"></string>
+    <string name="okButton">ok</string>
+    <string name="newUserButton">create new user</string>
+    <string name="guestEntranceButton">continue as guest</string>
+    <string name="title_activity_manager">ManagerActivity</string>
+    <string name="title_activity_supplier">SupplierActivity</string>
+    <string name="title_activity_customer">CustomerActivity</string>
+    <string name="booksButton">books</string>
+    <string name="complaintsButton">complaints</string>
+    <string name="requestsButton">requests</string>
+    <string name="ordersButton">orders</string>
+    <string name="shoppingCartButton">shopping cart</string>
+    <string name="exitButton">exit</string>
+    <string name="title_activity_add_coustomer">AddCoustomerActivity</string>
+    <string name="title_activity_add_supplier">AddSupplierActivity</string>
+    <string name="title_activity_books_pool">BooksPoolActivity</string>
+    <string name="title_activity_complaints">ComplaintsActivity</string>
+    <string name="title_activity_book_requests">BookRequestsActivity</string>
+    <string name="title_activity_orders">OrdersActivity</string>
+    <string name="title_activity_shopping_cart">ShoppingCartActivity</string>
+    <string name="title_activity_navigation_buyer">NavigationBuyerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_add_book">AddBookActivity</string>
+    <string name="drawer_open">Open navigation</string>
+    <string name="drawer_close">Close navigation</string>
+    <string name="Orders">orders</string>
+    <string-array name="subjects">
+        <item>SCI_FI</item>
+        <item>FANTASY</item>
+        <item>FICTION</item>
+        <item>NON_FICTION</item>
+        <item>HISTORICAL</item>
+        <item>SCIENCE</item>
+        <item>PSYCHOLOGY</item>
+        <item>NATURE</item>
+        <item>ROMANCE</item>
+        <item>THRILLER</item>
+        <item>BUSINESS</item>
+        <item>COOKING</item>
+        <item>POETRY</item>
+        <item>TRAVEL</item>
+        <item>SPIRITUAL</item>
+        <item>PHILOSOPHY</item>
+        <item>ANIMALS</item>
+        <item>KIDS</item>
+        <item>TEENS</item>
+        <item>YOUNG_ADULT</item>
+        <item>PREGNANCY</item>
+        <item>MOTHERHOOD</item>
+        <item>DIET</item>
+        <item>LIFE_STYLE</item>
+        <item>ENCYCLOPEDIA</item>
+        <item>COMIC_BOOKS</item>
+        <item>ALL_SUBJECTS</item>
+    </string-array>
+    <string name="title_activity_update_supplier">UpdateSupplierActivity</string>
+    <string name="defendant_name">defendant name</string>
+    <string name="complainant_name">complainant name</string>
+    <string name="search">search</string>
+    <string name="cancel">cancel</string>
+    <string name="title_activity_add_request">AddRequestActivity</string>
+    <string name="title_activity_add_complaint">AddComplaintActivity</string>
+    <string name="title_activity_connect">Connect</string>
+    <string name="title_activity_update_manager">UpdateManagerActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">name</string>
+    <string name="author">author</string>
+    <string name="recPrice">recommended price</string>
+    <string name="title_activity_nav">NavActivity</string>
+    <string name="sign" />
+    <string-array name="nav_drawer_items">
+        <item>Home</item>
+        <item>Update information</item>
+        <item>Shopping cart</item>
+        <item>Complaints</item>
+        <item>Orders</item>
+        <item>Book directory</item>
+        <item>Requests</item>
+        <item>Delete customers</item>
+    </string-array>
+
+    <!--<array name="nav_drawer_icons">-->
+    <!--<item>@mipmap/ic_home</item>-->
+    <!--<item>@mipmap/ic_people</item>-->
+    <!--<item>@mipmap/ic_photos</item>-->
+    <!--<item>@mipmap/ic_communities</item>-->
+    <!--<item name="ic_pages">@mipmap/ic_pages</item>-->
+    <!--<item>@mipmap/ic_whats_hot</item>-->
+    <!--</array>-->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_update_book_supplier">Book Supplier</string>
+    <string name="title_activity_show_book">ShowBookActivity</string>
+    <string name="title_activity_update_buyer">UpdateBuyerActivity</string>
+    <string name="title_activity_update_request">UpdateRequest</string>
+    <string name="title_activity_manager_orders">ManagerOrdersActivity</string>
+    <string name="title_activity_add_order">AddOrderActivity</string>
+
+</resources>

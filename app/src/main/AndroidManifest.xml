@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.aviga_000.bookstoreandroid">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".EntranceActivity"
+            android:label="Login"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ManagerComplaintsActivity"
+            android:label="@string/title_activity_manager"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SupplierBooksActivity"
+            android:label="@string/title_activity_supplier"
+            android:parentActivityName=".SupplierBooksActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CustomerActivity"
+            android:label="@string/title_activity_customer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddCoustomerActivity"
+            android:label="@string/title_activity_add_coustomer"
+            android:parentActivityName=".CustomerActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.aviga_000.bookstoreandroid.CustomerActivity" />
+        </activity>
+        <activity
+            android:name=".AddSupplierActivity"
+            android:label="@string/title_activity_add_supplier"
+            android:parentActivityName=".SupplierBooksActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SupplierBooksActivity" />
+        </activity>
+        <activity
+            android:name=".BooksPoolActivity"
+            android:label="@string/title_activity_books_pool"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ComplaintsActivity"
+            android:label="@string/title_activity_complaints"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BookRequestsActivity"
+            android:label="@string/title_activity_book_requests"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".OrdersActivity"
+            android:label="@string/title_activity_orders"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShoppingCartActivity"
+            android:label="@string/title_activity_shopping_cart"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddBookActivity"
+            android:label="@string/title_activity_add_book"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UpdateSupplierActivity"
+            android:label="@string/title_activity_update_supplier"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddRequestActivity"
+            android:label="@string/title_activity_add_request"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddComplaintActivity"
+            android:label="@string/title_activity_add_complaint"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Connect"
+            android:label="@string/title_activity_connect"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UpdateManagerActivity"
+            android:label="@string/title_activity_update_manager"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <fragment
+            android:name=".BuyersFragment"
+            android:label="Buyers"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".NavActivity"
+            android:label="@string/title_activity_nav"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PaymentActivity"
+            android:label="@string/title_activity_payment"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UpdateBookSupplier"
+            android:label="@string/title_activity_update_book_supplier"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShowBookActivity"
+            android:label="@string/title_activity_show_book"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UpdateBuyerActivity"
+            android:label="@string/title_activity_update_buyer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UpdateRequest"
+            android:label="@string/title_activity_update_request"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManagerOrdersActivity"
+            android:label="@string/title_activity_manager_orders"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddOrderActivity"
+            android:label="@string/title_activity_add_order"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest>

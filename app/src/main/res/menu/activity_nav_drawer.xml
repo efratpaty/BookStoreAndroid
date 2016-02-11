@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/home"
+            android:icon="@mipmap/ic_home"
+            android:title="Home" />
+        <item android:id="@+id/update"
+            android:icon="@mipmap/ic_update"
+            android:title="Update information" />
+        <item android:id="@+id/cart"
+            android:icon="@mipmap/ic_cart"
+            android:title="Shopping cart" />
+        <item android:id="@+id/complaint"
+            android:icon="@mipmap/ic_complaint"
+            android:title="Complaints"/>
+        <item android:id="@+id/request"
+            android:icon="@mipmap/ic_request"
+            android:title="Request"/>
+        <item android:id="@+id/bookdirectory"
+            android:icon="@mipmap/ic_bookdirectory"
+            android:title="Book Directory"/>
+        <item android:id="@+id/delete"
+            android:icon="@mipmap/ic_delete"
+            android:title="Delete User"/>
+        <item android:id="@+id/order"
+            android:icon="@mipmap/ic_orders"
+            android:title="Orders"/>
+    </group>
+
+</menu>
