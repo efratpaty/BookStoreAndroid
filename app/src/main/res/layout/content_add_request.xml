@@ -42,7 +42,9 @@
             android:id="@+id/bookIdText"
             android:hint="Book Id:"
             android:background="@drawable/back"
-            android:textColorHint="#52024d"/>
+            android:textColorHint="#52024d"
+            android:editable="true"
+            android:enabled="true" />
 
         <Space
             android:layout_width="match_parent"

@@ -45,20 +45,12 @@ public class BooksPoolActivity extends NavActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
+
         intentRecieve = getIntent();
         userType = intentRecieve.getIntExtra("user", 0);
 
-        super.onCreate(savedInstanceState);
-
         getLayoutInflater().inflate(R.layout.activity_books_pool, frameLayout);
-
-        /**
-         * Adding our layout to parent class frame layout.
-         */
-        if (userType != 0)
-            getLayoutInflater().inflate(R.layout.activity_books_pool, frameLayout);
-        else
-            setContentView(R.layout.activity_books_pool);
 
 
         button = (Button)findViewById(R.id.newButton);
@@ -112,7 +104,7 @@ public class BooksPoolActivity extends NavActivity {
         sAdapter.notifyDataSetChanged();
     }
 
-    protected void onNewClick(View view) {//on clicking new button open add book activity
+    public void onNewClick(View view) {//on clicking new button open add book activity
         intent = new Intent(BooksPoolActivity.this, AddBookActivity.class);
         startActivity(intent);
     }
@@ -137,11 +129,31 @@ public class BooksPoolActivity extends NavActivity {
                 break;
 
             case R.id.cart:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view cart")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                     intent = new Intent(BooksPoolActivity.this, ShoppingCartActivity.class);
                     intent.putExtra("user_id", userId);
                     intent.putExtra("user", userType);
                 break;
             case R.id.complaint:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view complaints")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                     intent = new Intent(BooksPoolActivity.this, ManagerComplaintsActivity.class);
                 else
@@ -151,6 +163,16 @@ public class BooksPoolActivity extends NavActivity {
 
                 break;
             case R.id.order:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view orders")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                     intent = new Intent(BooksPoolActivity.this, ManagerOrdersActivity.class);
                 intent = new Intent(BooksPoolActivity.this, OrdersActivity.class);
@@ -158,11 +180,31 @@ public class BooksPoolActivity extends NavActivity {
                 intent.putExtra("user", userType);
                 break;
             case R.id.request:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view book requests")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 intent = new Intent(BooksPoolActivity.this, BookRequestsActivity.class);
                 intent.putExtra("user_id", userId);
                 intent.putExtra("user", userType);
                 break;
             case R.id.update:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to update information")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                 intent = new Intent(BooksPoolActivity.this, UpdateManagerActivity.class);
                 if (userType == 2)
@@ -173,6 +215,16 @@ public class BooksPoolActivity extends NavActivity {
                 intent.putExtra("user", userType);
                 break;
             case R.id.delete:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to delete user")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3) {
                     new AlertDialog.Builder(this)
                             .setIcon(android.R.drawable.ic_dialog_alert)

@@ -1,11 +1,15 @@
 package com.example.aviga_000.bookstoreandroid;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -20,7 +24,7 @@ import StoreJavaClass.BookSearch;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
 
-public class BookRequestsActivity extends AppCompatActivity {
+public class BookRequestsActivity extends NavActivity {
 
     final PoolFunctions _backend = BackendFactory.getInstance(this);
     Intent intent  = new Intent();
@@ -28,10 +32,19 @@ public class BookRequestsActivity extends AppCompatActivity {
     private static final List<String> authorsNames = new ArrayList<String>();
     private ListView mList;
     private ArrayAdapter<BookSearch> mAdapter;
+    Intent intentRecieve = null;
+    int userType = 0;
+    Long userId = 0L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_requests);
+
+        intentRecieve = getIntent();
+        userType = intentRecieve.getIntExtra("user", 0);
+        userId = intentRecieve.getLongExtra("user_id", 0);
+
+        getLayoutInflater().inflate(R.layout.activity_book_requests, frameLayout);
 
 
         mList = (ListView)findViewById(R.id.RequestsListView);//find requests listView on activity xml
@@ -63,7 +76,7 @@ public class BookRequestsActivity extends AppCompatActivity {
         mList.setAdapter(mAdapter);
     }
 
-    protected  void onSearchClick(View view)
+    public void onSearchClick(View view)
     {
         String name = ((EditText) findViewById(R.id.nameAutoCompleteTextView)).getText().toString();//get user input
         String author = ((EditText) findViewById(R.id.authorAutoCompleteTextView)).getText().toString();//get user input
@@ -72,24 +85,110 @@ public class BookRequestsActivity extends AppCompatActivity {
         addListItems(requests);//set list items as the query results
 
     }
-    protected  void newRequestClick(View view)
+    public  void newRequestClick(View view)
     {
         intent = new Intent(this, AddRequestActivity.class);
+        intent.putExtra("user_id", userId);
+        intent.putExtra("user", userType);
         startActivity(intent);
 
     }
 
-    protected  void allClick(View view)
+    public  void allClick(View view)
     {
         ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
         addListItems(requests);//send to func to set requests list items
     }
 
-    protected  void myRequestsClick(View view)
+    public  void myRequestsClick(View view)
     {
     //change to show only customer requests
         ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
         addListItems(requests);//send to func to set requests list items
     }
 
-}
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        Intent intent = null;
+        switch (id) {
+
+            case R.id.home:
+                intent = new Intent(BookRequestsActivity.this, BooksPoolActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+
+            case R.id.bookdirectory:
+                intent = new Intent(BookRequestsActivity.this, BooksPoolActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+
+            case R.id.cart:
+                intent = new Intent(BookRequestsActivity.this, ShoppingCartActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+            case R.id.complaint:
+                if (userType == 3)
+                    intent = new Intent(BookRequestsActivity.this, ManagerComplaintsActivity.class);
+                else
+                    intent = new Intent(BookRequestsActivity.this, ComplaintsActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+
+                break;
+            case R.id.order:
+                if (userType == 3)
+                    intent = new Intent(BookRequestsActivity.this, ManagerOrdersActivity.class);
+                intent = new Intent(BookRequestsActivity.this, OrdersActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+            case R.id.request:
+                intent = new Intent(BookRequestsActivity.this, BookRequestsActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+            case R.id.update:
+                if (userType == 3)
+                    intent = new Intent(BookRequestsActivity.this, UpdateManagerActivity.class);
+                if (userType == 2)
+                    intent = new Intent(BookRequestsActivity.this, UpdateSupplierActivity.class);
+                if (userType == 1)
+                    intent = new Intent(BookRequestsActivity.this, UpdateBuyerActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+            case R.id.delete:
+                if (userType == 3) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("manager can't be deleted")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
+                if (userType == 2)
+                    intent = new Intent(BookRequestsActivity.this, UpdateSupplierActivity.class);
+                if (userType == 1)
+                    intent = new Intent(BookRequestsActivity.this, UpdateBuyerActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+
+                break;
+            default:
+                break;
+        }
+        if (intent != null)
+            startActivity(intent);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+
+    }}

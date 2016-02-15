@@ -125,7 +125,8 @@
                 android:text="New Book"
                 android:id="@+id/newButton"
                 android:textColor="#ffffff"
-                android:background="@drawable/my_button"/>
+                android:background="@drawable/my_button"
+                android:onClick="onNewClick" />
         </LinearLayout>
 
         <ListView

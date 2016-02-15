@@ -207,7 +207,7 @@
                 android:text="Sign up"
                 android:id="@+id/newBuyerButton"
                 android:layout_gravity="center_horizontal"
-                android:onClick="addNewBuyerOnClick"
+                android:onClick="addNewSupplierOnClick"
                 android:textColor="#ffffff"
                 android:background="@drawable/my_button"/>
 

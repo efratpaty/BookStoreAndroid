@@ -37,8 +37,6 @@ public class AddSupplierActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_supplier);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         //validate phone number
         ((EditText)findViewById(R.id.phoneText)).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -152,22 +150,24 @@ public class AddSupplierActivity extends AppCompatActivity {
         }
         else {
             final Supplier supplier = new Supplier(password, firstName, lastName, id, phone, email, city, street, buildingNumber, houseNumber, zipCode);
-//            _storeList.addSupplier(buyer);//send to function to add buyer
-            final Intent intent = new Intent(this, SupplierBooksActivity.class);
-            new AlertDialog.Builder(this)
+            backend.addSupplier(supplier);//send to function to add supplier
+            final Intent intent = new Intent(this, BooksPoolActivity.class);
+            intent.putExtra("user_id", supplier.getId());
+            intent.putExtra("user", 2);
+            startActivity(intent);//open buyer activity
+
+/*            new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("WELCOME :)")
                     .setMessage("You are now loged in")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            intent.putExtra("user_id", supplier.getId());
-                            intent.putExtra("user", 2);
                             startActivity(intent);//open buyer activity
+                            AddSupplierActivity.this.finish();
                         }
                     })
-                    .show();
+                    .show();*/
         }
     }
-
 }

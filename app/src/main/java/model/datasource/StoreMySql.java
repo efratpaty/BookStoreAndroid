@@ -1,9 +1,12 @@
 package model.datasource;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.ParseException;
 import android.os.AsyncTask;
+import android.util.Log;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +36,7 @@ import StoreJavaClass.ShoppingCartHelper;
 import StoreJavaClass.Subject;
 import StoreJavaClass.Supplier;
 import StoreJavaClass.SupplierBook;
-import model.Const;
+
 import model.backend.PoolFunctions;
 
 /**
@@ -66,7 +69,8 @@ public class StoreMySql implements PoolFunctions {
 
             // print result
             return response.toString();
-        } else {
+        }
+        else {
             return "";
         }
     }
@@ -132,7 +136,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", buyer.getHouseNumber());
                     _params.put("zipCode", buyer.getZipCode());
                     try {
-                        POST(Const.web_url + "addBuyer.php", _params);
+                        POST(web_url + "addBuyer.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -156,7 +160,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Buyer> doInBackground(Void... voids) {
                     try {
                         Buyer tempBuyer;
-                        JSONArray buyersList = new JSONObject(GET(web_url + "buyerList.php")).getJSONArray("buyers");
+                        JSONArray buyersList = new JSONObject(GET(web_url + "getBuyersList.php")).getJSONArray("buyers");
                         for (int i = 0; i < buyersList.length(); i++) {
                             tempBuyer = new Buyer();
                             tempBuyer.setId(buyersList.getJSONObject(i).getLong("id"));
@@ -214,7 +218,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", buyer.getHouseNumber());
                     _params.put("zipCode", buyer.getZipCode());
                     try {
-                        POST(Const.web_url + "updateBuyer.php", _params);
+                        POST(web_url + "updateBuyer.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -255,7 +259,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Buyer> doInBackground(Void... voids) {
                     try {
                         Buyer tempBuyer;
-                        JSONArray buyersList = new JSONObject(GET(web_url + "buyerList.php")).getJSONArray("buyers");
+                        JSONArray buyersList = new JSONObject(GET(web_url + "getBuyersList.php")).getJSONArray("buyers");
                         for (int i = 0; i < buyersList.length(); i++) {
                             tempBuyer = new Buyer();
                             tempBuyer.setId(buyersList.getJSONObject(i).getLong("id"));
@@ -310,9 +314,9 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("publishers", book.getPublishers());
                     _params.put("recommendedPrice", book.getRecommendedPrice());
                     _params.put("summary", book.getSummary());
-                    _params.put("url", book.getUrl());
+                    _params.put("imageBook", book.getUrl());
                     try {
-                        POST(Const.web_url + "addBook.php", _params);
+                        POST(web_url + "addBook.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -345,7 +349,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("summary", book.getSummary());
                     _params.put("url", book.getUrl());
                     try {
-                        POST(Const.web_url + "deleteBook.php", _params);
+                        POST(web_url + "deleteBook.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -376,26 +380,32 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Book> doInBackground(Void... voids) {
                     try {
                         Book tempBook;
-                        JSONArray booksList = new JSONObject(GET(web_url + "bookList.php")).getJSONArray("books");
+                        JSONArray booksList = new JSONObject(GET(web_url + "getBooksList.php")).getJSONArray("books");
                         for (int i = 0; i < booksList.length(); i++) {
-                            tempBook = null;
-                            tempBook.setBookName(booksList.getJSONObject(i).getString("bookName"));
-                            tempBook.setAuthor(booksList.getJSONObject(i).getString("author"));
-                            tempBook.setPublicationDate(booksList.getJSONObject(i).getInt("publicationDate"));
-                            tempBook.setPublishers(booksList.getJSONObject(i).getString("publishers"));
-                            tempBook.setRecommendedPrice(Float.valueOf(String.valueOf(booksList.getJSONObject(i).getDouble("recommendedPrice"))));
-                            tempBook.setSummary(booksList.getJSONObject(i).getString("summary"));
+                            JSONObject childJSONObject = booksList.getJSONObject(i);
 
-                            JSONArray subjectList = booksList.getJSONObject(i).getJSONArray("subject");
-                            ArrayList<Subject> tempSubject = new ArrayList<Subject>();
-                            for (int j = 0; j < subjectList.length(); j++) {
-                                tempSubject.add(Subject.valueOf(subjectList.getJSONObject(j).getString("subject")));
-                            }
-                            tempBook.setSubject(tempSubject);
+                            int bookId =  childJSONObject.getInt("bookId");
+                            String bookName = childJSONObject.getString("bookName");
+                            String author = childJSONObject.getString("author");
+                            int publicationDate =  childJSONObject.getInt("publicationDate");
+                            String publishers = childJSONObject.getString("publishers");
+                            float recPrice =Float.valueOf(String.valueOf(childJSONObject.getDouble("recommendedPrice")));
+                            String summary = childJSONObject.getString("summary");
+                            //Subject subject = Subject.valueOf(childJSONObject.getString("subject"));
+                            String url = childJSONObject.getString("imageBook");
 
-                            tempBook.setUrl(booksList.getJSONObject(i).getString("url"));
-
-                            JSONArray supplierList = booksList.getJSONObject(i).getJSONArray("supplierList");
+                            tempBook = new Book(bookName,author,publicationDate,publishers,recPrice,summary,Subject.ALL_SUBJECTS,url);
+                            /*tempBook.setBookId(bookId);
+                            tempBook.setBookName(bookName);
+                            tempBook.setAuthor(author);
+                            tempBook.setPublicationDate(publicationDate);
+                            tempBook.setPublishers(publishers);
+                            tempBook.setRecommendedPrice(recPrice);
+                            tempBook.setSummary(summary);
+                            tempBook.setSubject(Subject.ALL_SUBJECTS);
+                            tempBook.setUrl(url);
+*/
+                            /*JSONArray supplierList = booksList.getJSONObject(i).getJSONArray("supplierList");
                             ArrayList<Supplier> tempSupplierList = new ArrayList<Supplier>();
                             Supplier tempSupplier = null;
                             for (int j = 0; j < supplierList.length(); j++) {
@@ -407,13 +417,13 @@ public class StoreMySql implements PoolFunctions {
                                 tempSupplier.seteMail(supplierList.getJSONObject(i).getString("eMail"));
                                 tempSupplier.setCity(supplierList.getJSONObject(i).getString("city"));
                                 tempSupplier.setStreet(supplierList.getJSONObject(i).getString("street"));
-                                tempSupplier.setBuildingNumber(subjectList.getJSONObject(i).getInt("buildingNumber"));
+                                tempSupplier.setBuildingNumber(supplierList.getJSONObject(i).getInt("buildingNumber"));
                                 tempSupplier.setHouseNumber(supplierList.getJSONObject(i).getString("houseNumber"));
                                 tempSupplier.setZipCode(supplierList.getJSONObject(i).getInt("zipCode"));
 
                                 tempSupplierList.add(tempSupplier);
                             }
-                            tempBook.setSupplierList(tempSupplierList);
+                            tempBook.setSupplierList(tempSupplierList);*/
                             books.add(tempBook);
                         }
                     } catch (Exception e) {
@@ -458,7 +468,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", supplier.getHouseNumber());
                     _params.put("zip", supplier.getZipCode());
                     try {
-                        POST(Const.web_url + "addSupplier.php", _params);
+                        POST(web_url + "addSupplier.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -470,7 +480,6 @@ public class StoreMySql implements PoolFunctions {
         {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -494,7 +503,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", supplier.getHouseNumber());
                     _params.put("zip", supplier.getZipCode());
                     try {
-                        POST(Const.web_url + "updateSupplier.php", _params);
+                        POST(web_url + "updateSupplier.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -531,7 +540,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", supplier.getHouseNumber());
                     _params.put("zip", supplier.getZipCode());
                     try {
-                        POST(Const.web_url + "deleteSupplier.php", _params);
+                        POST(web_url + "deleteSupplier.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -550,14 +559,14 @@ public class StoreMySql implements PoolFunctions {
     @Override
     public Supplier searchSupplier(final String password) {
 
-        return StoreList.searchSupplier(password);
+        return list.searchSupplier(password);
 
     }
 
     @Override
     public ArrayList<SupplierBook> supplierBookList(long supplierID) {
 
-        return StoreList.supplierBookList(supplierID);
+        return list.supplierBookList(supplierID);
     }
 
     @Override
@@ -569,8 +578,10 @@ public class StoreMySql implements PoolFunctions {
                 @Override
                 protected ArrayList<Supplier> doInBackground(Void... voids) {
                     try {
+                        if(android.os.Debug.isDebuggerConnected())
+                            android.os.Debug.waitForDebugger();
                         Supplier tempSupplier;
-                        JSONArray suppliersList = new JSONObject(GET(web_url + "supplierList.php")).getJSONArray("suppliers");
+                        JSONArray suppliersList = new JSONObject(GET(web_url + "getSupplierList.php")).getJSONArray("supplier");
                         for (int i = 0; i < suppliersList.length(); i++) {
                             tempSupplier = null;
                             tempSupplier.setId(suppliersList.getJSONObject(i).getLong("id"));
@@ -624,7 +635,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("price", supplierBook.getPrice());
                     _params.put("bookCondition", supplierBook.getBookCondition());
                     try {
-                        POST(Const.web_url + "addSupplierBook.php", _params);
+                        POST(web_url + "addSupplierBook.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -656,7 +667,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("price", supplierBook.getPrice());
                     _params.put("bookCondition", supplierBook.getBookCondition());
                     try {
-                        POST(Const.web_url + "updateSupplierBook.php", _params);
+                        POST(web_url + "updateSupplierBook.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -688,7 +699,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("price", supplierBook.getPrice());
                     _params.put("bookCondition", supplierBook.getBookCondition());
                     try {
-                        POST(Const.web_url + "deleteSupplierBook.php", _params);
+                        POST(web_url + "deleteSupplierBook.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -714,7 +725,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<SupplierBook> doInBackground(Void... voids) {
                     try {
                         SupplierBook tempSupplierBook;
-                        JSONArray supplierBooksList = new JSONObject(GET(web_url + "supplierBookList.php")).getJSONArray("supplierBooks");
+                        JSONArray supplierBooksList = new JSONObject(GET(web_url + "getSupplierBookList.php")).getJSONArray("supplierBooks");
                         for (int i = 0; i < supplierBooksList.length(); i++) {
                             tempSupplierBook = null;
                             tempSupplierBook.setId(supplierBooksList.getJSONObject(i).getInt("supplierBook_id"));
@@ -767,7 +778,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("paymentSum", order.getPaymentSum());
                     _params.put("orderDate", order.getOrderDate());
                     try {
-                        POST(Const.web_url + "addOrder.php", _params);
+                        POST(web_url + "addOrder.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -802,7 +813,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("paymentSum", order.getPaymentSum());
                     _params.put("orderDate", order.getOrderDate());
                     try {
-                        POST(Const.web_url + "addOrder.php", _params);
+                        POST(web_url + "addOrder.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -820,17 +831,17 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Order> customerOrderListByDate(Date from, Date to, Long customerId) {
-        return StoreList.customerOrderListByDate(from, to, customerId);
+        return list.customerOrderListByDate(from, to, customerId);
     }
 
     @Override
     public ArrayList<Order> SupplierOrderListByDate(Date from, Date to, Long supplierId) {
-        return StoreList.SupplierOrderListByDate(from, to, supplierId);
+        return list.SupplierOrderListByDate(from, to, supplierId);
     }
 
     @Override
     public ArrayList<Order> orderListByDate(Date from, Date to) {
-        return StoreList.orderListByDate(from, to);
+        return list.orderListByDate(from, to);
     }
 
     @Override
@@ -842,7 +853,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Order> doInBackground(Void... voids) {
                     try {
                         Order tempOrder;
-                        JSONArray ordersList = new JSONObject(GET(web_url + "ordersList.php")).getJSONArray("orders");
+                        JSONArray ordersList = new JSONObject(GET(web_url + "getOrderList.php")).getJSONArray("orders");
                         for (int i = 0; i < ordersList.length(); i++) {
                             tempOrder = null;
 
@@ -907,22 +918,22 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Order> SupplierorderList(long supplierId) {
-        return StoreList.SupplierorderList (supplierId);
+        return list.SupplierorderList (supplierId);
     }
 
     @Override
     public ArrayList<Order> BuyerOrderList(long buyerId) {
-        return StoreList.BuyerOrderList(buyerId);
+        return list.BuyerOrderList(buyerId);
     }
 
     @Override
     public double expenses(Date from, Date to) {
-        return StoreList.expenses(from, to);
+        return list.expenses(from, to);
     }
 
     @Override
     public double profit(Date from, Date to) {
-        return StoreList.profit(from, to);
+        return list.profit(from, to);
     }
 
     @Override
@@ -942,7 +953,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("maxPrice", bookSearching.getMaxPrice());
                     _params.put("sendMessage", bookSearching.isSendMessage());
                     try {
-                        POST(Const.web_url + "addBookSearch.php", _params);
+                        POST(web_url + "addBookSearch.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -973,7 +984,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("maxPrice", bookSearching.getMaxPrice());
                     _params.put("sendMessage", bookSearching.isSendMessage());
                     try {
-                        POST(Const.web_url + "updateBookSearch.php", _params);
+                        POST(web_url + "updateBookSearch.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1004,7 +1015,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("maxPrice", bookSearching.getMaxPrice());
                     _params.put("sendMessage", bookSearching.isSendMessage());
                     try {
-                        POST(Const.web_url + "deleteBookSearch.php", _params);
+                        POST(web_url + "deleteBookSearch.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1027,7 +1038,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<BookSearch> doInBackground(Void... voids) {
                     try {
                         BookSearch tempRequest;
-                        JSONArray requestsList = new JSONObject(GET(web_url + "bookSearchList.php")).getJSONArray("bookSearches");
+                        JSONArray requestsList = new JSONObject(GET(web_url + "getSearchBookList.php")).getJSONArray("bookSearches");
                         for (int i = 0; i < requestsList.length(); i++) {
                             tempRequest = null;
                             tempRequest.setCustomerId(requestsList.getJSONObject(i).getLong("customer_id"));
@@ -1066,12 +1077,12 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<BookSearch> authorBookRequestList(String name, String author) {
-        return StoreList.authorBookRequestList(name, author);
+        return list.authorBookRequestList(name, author);
     }
 
     @Override
     public void reminder() {
-        StoreList.reminder();
+        list.reminder();
     }
 
     @Override
@@ -1087,7 +1098,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("defendant_id", complains.getDefendantId());
                     _params.put("complaint", complains.getComplaint());
                     try {
-                        POST(Const.web_url + "addComplaint.php", _params);
+                        POST(web_url + "addComplaint.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1116,7 +1127,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("defendant_id", complains.getDefendantId());
                     _params.put("complaint", complains.getComplaint());
                     try {
-                        POST(Const.web_url + "updateComplaint.php", _params);
+                        POST(web_url + "updateComplaint.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1145,7 +1156,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("defendant_id", complains.getDefendantId());
                     _params.put("complaint", complains.getComplaint());
                     try {
-                        POST(Const.web_url + "deleteComplaint.php", _params);
+                        POST(web_url + "deleteComplaint.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1171,7 +1182,7 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Complains> doInBackground(Void... voids) {
                     try {
                         Complains tempComplaint;
-                        JSONArray complaintsList = new JSONObject(GET(web_url + "complainsList.php")).getJSONArray("complaints");
+                        JSONArray complaintsList = new JSONObject(GET(web_url + "getComplaintsList.php")).getJSONArray("complaints");
                         for (int i = 0; i < complaintsList.length(); i++) {
                             tempComplaint = null;
                             tempComplaint.setComplaintId(complaintsList.getJSONObject(i).getInt("complaint_id"));
@@ -1205,17 +1216,17 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Complains> complainsUserList(long userID) {
-        return StoreList.complainsUserList(userID);
+        return list.complainsUserList(userID);
     }
 
     @Override
     public ArrayList<Complains> complainsAboutUserList(long userID) {
-        return StoreList.complainsAboutUserList(userID);
+        return list.complainsAboutUserList(userID);
     }
 
     @Override
     public ArrayList<Complains> complainantDefendant(long complainantID, long defendantID) {
-        return StoreList.complainantDefendant(complainantID, defendantID);
+        return list.complainantDefendant(complainantID, defendantID);
     }
 
     @Override
@@ -1238,7 +1249,7 @@ public class StoreMySql implements PoolFunctions {
                     _params.put("houseNumber", manager.getHouseNumber());
                     _params.put("zipCode", manager.getZipCode());
                     try {
-                        POST(Const.web_url + "updateManager.php", _params);
+                        POST(web_url + "updateManager.php", _params);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -1256,17 +1267,17 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public void SendEmail(List<String> email, String subject, String text) {
-        StoreList.SendEmail(email, subject, text);
+        list.SendEmail(email, subject, text);
     }
 
     @Override
     public ArrayList<Long> customersId() {
-        return StoreList.customersId();
+        return list.customersId();
     }
 
     @Override
     public void exitProgram(Activity activity) {
-        StoreList.exitProgram(activity);
+        list.exitProgram(activity);
     }
 
     @Override
@@ -1276,7 +1287,7 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<SupplierBook> findSuplierBookById(long userId) {
-        return StoreList.findSuplierBookById(userId);
+        return list.findSuplierBookById(userId);
     }
 
     @Override

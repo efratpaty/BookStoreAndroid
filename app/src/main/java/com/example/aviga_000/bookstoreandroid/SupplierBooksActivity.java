@@ -41,13 +41,12 @@ public class SupplierBooksActivity extends NavActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_supplier_books, frameLayout);
 
         intentRecieve = getIntent();
-        userId = intentRecieve.getLongExtra("user_id",0);
-        userType = intentRecieve.getIntExtra("user",0);
+        userType = intentRecieve.getIntExtra("user", 0);
+        userId = intentRecieve.getLongExtra("user_id", 0);
         bookId = intentRecieve.getIntExtra("book_id", 0);
         int request = intentRecieve.getIntExtra("request", 0);
         if (request == 1) {//if activity was open from book requests recieve price and condition and find all books that stand for the right criterion
@@ -78,9 +77,9 @@ public class SupplierBooksActivity extends NavActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 Intent sbi = new Intent(SupplierBooksActivity.this, ShowBookActivity.class);
-                sbi.putExtra("buyer Book id", backend.supplierBookList().get(position).getId());
-                sbi.putExtra("user", intentRecieve.getIntExtra("user", 0));
-                sbi.putExtra("user_id", intentRecieve.getLongExtra("user_id", 0));
+                sbi.putExtra("book_id", bookId);
+                sbi.putExtra("user", userType);
+                sbi.putExtra("user_id", userId);
                 startActivity(sbi);
             }
         });
@@ -138,11 +137,31 @@ public class SupplierBooksActivity extends NavActivity {
                 break;
 
             case R.id.cart:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view cart")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 intent = new Intent(this, ShoppingCartActivity.class);
                 intent.putExtra("user_id", userId);
                 intent.putExtra("user", userType);
                 break;
             case R.id.complaint:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view complaints")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                     intent = new Intent(this, ManagerComplaintsActivity.class);
                 else
@@ -152,6 +171,16 @@ public class SupplierBooksActivity extends NavActivity {
 
                 break;
             case R.id.order:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view orders")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                     intent = new Intent(this, ManagerOrdersActivity.class);
                 intent = new Intent(this, OrdersActivity.class);
@@ -159,11 +188,31 @@ public class SupplierBooksActivity extends NavActivity {
                 intent.putExtra("user", userType);
                 break;
             case R.id.request:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to view requests")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 intent = new Intent(this, BookRequestsActivity.class);
                 intent.putExtra("user_id", userId);
                 intent.putExtra("user", userType);
                 break;
             case R.id.update:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to update information")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3)
                     intent = new Intent(this, UpdateManagerActivity.class);
                 if (userType == 2)
@@ -174,6 +223,16 @@ public class SupplierBooksActivity extends NavActivity {
                 intent.putExtra("user", userType);
                 break;
             case R.id.delete:
+                if(userType == 0){
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("You must be logged-in in order to delete user")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+                }
                 if (userType == 3) {
                     new AlertDialog.Builder(this)
                             .setIcon(android.R.drawable.ic_dialog_alert)

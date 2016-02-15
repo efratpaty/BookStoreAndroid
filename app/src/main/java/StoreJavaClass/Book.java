@@ -20,13 +20,13 @@ public class Book implements Serializable
     private String publishers;
     private float recommendedPrice;
     private String summary;
-    private List<Subject> Subject;
+    private Subject Subject;
     private String url;
     private List<Supplier> supplierList;
     //constructor
 
 
-    public Book( String bookName, String author, int publicationDate, String publishers, float recommendedPrice, String summary, List<Subject> subject, String url) {
+    public Book( String bookName, String author, int publicationDate, String publishers, float recommendedPrice, String summary, StoreJavaClass.Subject subject, String url) {
         this.bookId = count.incrementAndGet();
         this.bookName = bookName;
         this.author = author;
@@ -39,11 +39,11 @@ public class Book implements Serializable
     }
 
     //getters & setters
-    public List<Subject> getSubject() {
+    public StoreJavaClass.Subject getSubject() {
         return Subject;
     }
 
-    public void setSubject(List<Subject> subject) {
+    public void setSubject(StoreJavaClass.Subject subject) {
         Subject = subject;
     }
 

@@ -42,6 +42,7 @@ public class ManagerComplaintsActivity extends NavActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         intentRecieve = getIntent();
@@ -164,6 +165,11 @@ public class ManagerComplaintsActivity extends NavActivity {
                 break;
             case R.id.update:
                     intent = new Intent(ManagerComplaintsActivity.this, UpdateManagerActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("user", userType);
+                break;
+            case R.id.bookdirectory:
+                intent = new Intent(ManagerComplaintsActivity.this, BooksPoolActivity.class);
                 intent.putExtra("user_id", userId);
                 intent.putExtra("user", userType);
                 break;

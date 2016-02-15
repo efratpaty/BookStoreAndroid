@@ -77,12 +77,12 @@ public class ManagerOrdersActivity extends NavActivity {
 
     public void onProfitClick (View view) throws ParseException {//get the profit in the specific time frame
 
-        profits.setText((int) _backend.profit(df.parse(fromProfit.toString()),df.parse(toProfit.toString())));
+        profits.setText(String.valueOf(_backend.profit(df.parse(fromProfit.toString()),df.parse(toProfit.toString()))));
     }
 
     public void onExpansesClick (View view) throws ParseException {//get the expanses in the specific time frame
 
-        expanses.setText((int) _backend.profit(df.parse(fromExpanses.toString()),df.parse(toExpanses.toString())));
+        expanses.setText(String.valueOf(_backend.profit(df.parse(fromExpanses.toString()),df.parse(toExpanses.toString()))));
     }
 
     public void onOrdersSearch (View view) throws ParseException {//display all the orders in the specific time frame

@@ -41,8 +41,9 @@ public class ShowBookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_book);
 
         rIntent = getIntent();
-        supplierBookId = rIntent.getIntExtra("buyer Book id", 0);
+        supplierBookId = rIntent.getIntExtra("book_id", 0);
         userId = rIntent.getLongExtra("user_id", 0);
+        userType = rIntent.getIntExtra("user", 0);
 
         TextView bookName = (TextView)findViewById(R.id.bookNameText);
         TextView author = (TextView)findViewById(R.id.authorText);
@@ -81,13 +82,8 @@ public class ShowBookActivity extends AppCompatActivity {
                 author.setText(b.getAuthor());
                 publisher.setText(b.getPublishers());
                 publicationDate.setText(String.valueOf(b.getPublicationDate()));
-                String sub = "";
-                for (Subject s: b.getSubject()) {
-                    sub += String.valueOf(s);
-                    sub += ", ";
-                }
                 subject.setText(String.valueOf(b.getSubject()));
-                recPrice.setText(sub);
+                recPrice.setText(String.valueOf(b.getRecommendedPrice()));
                 summary.setText(b.getSummary());
                 Picasso.with(ShowBookActivity.this).load(b.getUrl()).into(imageView);
             }
@@ -99,7 +95,6 @@ public class ShowBookActivity extends AppCompatActivity {
 
         public void onCartClickActivity (View view)
     {
-        userType = rIntent.getIntExtra("user", 0);
         if (userType == 0)
         {
             new AlertDialog.Builder(ShowBookActivity.this)
@@ -122,6 +117,13 @@ public class ShowBookActivity extends AppCompatActivity {
         else
         {
             backend.addCartItem(userId,spb);//add book to cart
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Success")
+                    .setMessage("Item added to cart")
+                    .setPositiveButton("OK", null)
+                    .setIcon(android.R.drawable.star_on)
+                    .show();
         }
     }
 

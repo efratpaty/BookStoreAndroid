@@ -182,7 +182,7 @@ import javax.mail.internet.InternetAddress;
         for (Book sp : bookList()) {//for each book check all the conditions
             if ((name .equals( null) || name.equals( "")  || sp.getBookName().toLowerCase().contains(name.toLowerCase()))
                     && (author.equals(null) || author.equals("") || sp.getAuthor().toLowerCase().contains( author.toLowerCase()))
-                    && (subject == (null) || subject == Subject.ALL_SUBJECTS || sp.getSubject().contains(subject)))
+                    && (subject == (null) || subject == Subject.ALL_SUBJECTS || sp.getSubject().equals(subject)))
                 idbooks.add(sp.getBookId());//add book to the list if he stand to all the conditions
         }
         for (int id:idbooks) {
@@ -198,8 +198,7 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     public ArrayList<Book> bookList() {
-        ArrayList<Subject> subject = new ArrayList<Subject>();
-        subject.add(Subject.KIDS);
+        Subject subject =Subject.KIDS;
         Book a = new Book("Anne of Green Gables", "Lucy Maud Montgomery", 1908 , "shiran", 100, "very good", subject, "http://www.tourismpei.com/media/wp-content/uploads/2014/07/2012-05-anne-of-green-gables-book.jpg");
         Book b = new Book("harry potter", "j.k rolling",1997 , "efrat", 80, "very good", subject, "http://vaguelycircular.com/wp-content/uploads/sites/7/2015/08/harry-potter-11.jpg");
         books.add(a);
@@ -285,8 +284,8 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static Supplier searchSupplier(String password) {
-        for (Supplier s : supplierList()) {
+    public  Supplier searchSupplier(String password) {
+        for (Supplier s : suppliers) {
             if (s.getPassword() == password) {
                 return s;
             }
@@ -296,7 +295,7 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static ArrayList<SupplierBook> supplierBookList(long supplierID) {
+    public  ArrayList<SupplierBook> supplierBookList(long supplierID) {
         //return a list of all the books this supplier supplies
         ArrayList<SupplierBook> supplierbooks = new ArrayList<>();
         // supplierBooks.stream().filter(supplierBook -> supplierBook.getSupplierId() == supplierID).collect(Collectors.toList());
@@ -438,7 +437,7 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed({"Manager"})
-    public static ArrayList<Order> orderListByDate(Date from, Date to) {
+    public ArrayList<Order> orderListByDate(Date from, Date to) {
         ArrayList<Order> ordersByDate = new ArrayList<>();
         for (Order o:orders ){
            if (o.getOrderDate().before(to) && o.getOrderDate().after(from))
@@ -449,7 +448,7 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed({"Manager", "Buyer"})
-    public static ArrayList<Order> customerOrderListByDate(Date from, Date to, Long customerId) {
+    public ArrayList<Order> customerOrderListByDate(Date from, Date to, Long customerId) {
 
         ArrayList<Order> customerOrdersByDate = new ArrayList<>();
         for (Order o:orders ){
@@ -461,7 +460,7 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed({"Manager", "Supplier"})
-    public static ArrayList<Order> SupplierOrderListByDate(Date from, Date to, Long supplierId) {
+    public ArrayList<Order> SupplierOrderListByDate(Date from, Date to, Long supplierId) {
         ArrayList<Order> customerOrdersByDate = new ArrayList<>();
         for (Order o:orders ){
             if (o.getOrderDate().before(to) && o.getOrderDate().after(from) && o.getSupplierId().contains(supplierId))
@@ -479,10 +478,10 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed({"Manager", "Supplier"})
-    public static ArrayList<Order> SupplierorderList(long supplierId)//return list of all orders from supplier in descending order(by date)
+    public ArrayList<Order> SupplierorderList(long supplierId)//return list of all orders from supplier in descending order(by date)
     {
         ArrayList<Order> supplierOrders = new ArrayList<>();
-        for (Order order : orderList()) {
+        for (Order order : orders) {
             if (order.getSupplierId().contains(supplierId))
                 supplierOrders.add(order);
         }
@@ -492,10 +491,10 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed({"Manager", "Buyer"})
-    public static ArrayList<Order> BuyerOrderList(long buyerId)//return list of all buyer orders in descending order (by date)
+    public ArrayList<Order> BuyerOrderList(long buyerId)//return list of all buyer orders in descending order (by date)
     {
         ArrayList<Order> buyerOrders = new ArrayList<>();
-        for (Order order : orderList()) {
+        for (Order order : orders) {
             if (order.getCustomerId() == buyerId)
                 buyerOrders.add(order);
         }
@@ -505,21 +504,52 @@ import javax.mail.internet.InternetAddress;
 
     @Override
     @RolesAllowed("Manager")
-    public static double expenses(Date from, Date to)//return all the expenses un the requested time frame(the supplier gets 85% of the book price)
+    public double expenses(Date from, Date to)//return all the expenses un the requested time frame(the supplier gets 85% of the book price)
     {
         //calculate the total payments sum in the requested time frame
-        double expensesSum = 2; //orders.stream().filter(o -> from != null && to != null && o.getOrderDate().after(from) && o.getOrderDate().before(to)).map(o -> o.getPaymentSum()).collect(Collectors.counting());
+        double expensesSum = 0;
+        if (from != null && to != null)
+            for (Order o:orders) {
+                if (o.getOrderDate().after(from) && o.getOrderDate().before(to))
+                    expensesSum += o.getPaymentSum();
+            }
+        else if (from != null && to == null)
+            for (Order o:orders) {
+                if (o.getOrderDate().after(from))
+                    expensesSum += o.getPaymentSum();
+            }
+        else if (from == null && to != null)
+            for (Order o:orders) {
+                if (o.getOrderDate().before(to))
+                    expensesSum += o.getPaymentSum();
+            }
         //calculate the total sum the store payed the suppliers in the requested time frame
         return expensesSum * 0.85;
     }
 
     @Override
     @RolesAllowed("Manager")
-    public static double profit(Date from, Date to) {
+    public double profit(Date from, Date to) {
         //calculate the total payments sum in the requested time frame
-        double profitSum = 2;//orders.stream().filter(o -> from != null && to != null && o.getOrderDate().after(from) && o.getOrderDate().before(to)).map(o -> o.getPaymentSum()).collect(Collectors.counting());
+        double profitSum = 0;
+        if (from != null && to != null)
+            for (Order o:orders) {
+                if (o.getOrderDate().after(from) && o.getOrderDate().before(to))
+                    profitSum += o.getPaymentSum();
+            }
+        else if (from != null && to == null)
+            for (Order o:orders) {
+                if (o.getOrderDate().after(from))
+                    profitSum += o.getPaymentSum();
+            }
+        else if (from == null && to != null)
+            for (Order o:orders) {
+                if (o.getOrderDate().before(to))
+                    profitSum += o.getPaymentSum();
+            }
+
         //calculate the store total profits sum during the requested time frame
-        return profitSum;
+        return profitSum*0.15;
     }
 
     @Override
@@ -664,15 +694,15 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static ArrayList<BookSearch> authorBookRequestList(String name, String author)//search bookSearch(requests) by author and/or book name
+    public ArrayList<BookSearch> authorBookRequestList(String name, String author)//search bookSearch(requests) by author and/or book name
     {
         ArrayList<Integer> booksId = new ArrayList<Integer>();//new list that will contain all the book id's that stand to the query terms
         ArrayList<BookSearch> requests = new ArrayList<BookSearch>();
-        for (Book b : bookList()) {
+        for (Book b : books) {
             if (name == null || name == "" || name == b.getBookName() && (author == null || author == "" || author == b.getAuthor()))
                 booksId.add(b.getBookId());
         }
-        for (BookSearch r : bookSearchList()) {//for each request check if the requested book id match one of the id's that match the query
+        for (BookSearch r : bookSearchings) {//for each request check if the requested book id match one of the id's that match the query
             for (Integer i : booksId) {
                 if (r.getBookId() == i)
                     requests.add(r);
@@ -682,7 +712,7 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static void reminder() {
+    public void reminder() {
 
         Calendar calNow = Calendar.getInstance();
         calNow.add(Calendar.MONTH, -1);
@@ -784,10 +814,10 @@ import javax.mail.internet.InternetAddress;
 
     //not sure this func is needed
     @Override
-    public static ArrayList<Complains> complainsUserList(long userID) // user complaints
+    public ArrayList<Complains> complainsUserList(long userID) // user complaints
     {
         ArrayList<Complains> buyerComplaints = new ArrayList<>();
-        for (Complains c : complainsList()) {
+        for (Complains c : complainses) {
             if (c.getComplainantId() == userID)
                 buyerComplaints.add(c);
         }
@@ -796,10 +826,10 @@ import javax.mail.internet.InternetAddress;
 
     //not sure this func is needed
     @Override
-    public static ArrayList<Complains> complainsAboutUserList(long userID)//complaints about user
+    public ArrayList<Complains> complainsAboutUserList(long userID)//complaints about user
     {
         ArrayList<Complains> ComplaintsAboutBuyer = new ArrayList<>();
-        for (Complains c : complainsList()) {
+        for (Complains c : complainses) {
             if (c.getDefendantId() == userID)
                 ComplaintsAboutBuyer.add(c);
         }
@@ -807,10 +837,10 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static ArrayList<Complains> complainantDefendant(long complainantID, long defendantID)//all the complaints about specific user or from specific user or from specific user about another specific user
+    public ArrayList<Complains> complainantDefendant(long complainantID, long defendantID)//all the complaints about specific user or from specific user or from specific user about another specific user
     {
         ArrayList<Complains> C = new ArrayList<>();
-        for (Complains c : complainsList()) {
+        for (Complains c : complainses) {
             if (complainantID == 0 || complainantID == 0L || c.getComplainantId() == complainantID && defendantID == 0 || defendantID == 0L || c.getDefendantId() == defendantID)
                 C.add(c);
         }
@@ -833,7 +863,7 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static void SendEmail(List<String> emails, String subject, String text) {//throws AddressException {
+    public void SendEmail(List<String> emails, String subject, String text) {//throws AddressException {
 
 /*
         // Sender's email ID
@@ -884,18 +914,18 @@ import javax.mail.internet.InternetAddress;
 
     }
 
-    public static ArrayList<Long> customersId() {
+    public ArrayList<Long> customersId() {
         ArrayList<Long> customersId = new ArrayList<Long>();
-        for (Buyer buyer : buyerList()) {
+        for (Buyer buyer : buyers) {
             customersId.add(buyer.getId());
         }
-        for (Supplier supplier : supplierList()) {
+        for (Supplier supplier : suppliers) {
             customersId.add(supplier.getId());
         }
         return customersId;
     }
 
-    public static void exitProgram(final Activity activity) {
+    public void exitProgram(final Activity activity) {
         new AlertDialog.Builder(activity)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Closing program")
@@ -941,7 +971,7 @@ import javax.mail.internet.InternetAddress;
     }
 
     @Override
-    public static ArrayList<SupplierBook> findSuplierBookById(long userId) {
+    public ArrayList<SupplierBook> findSuplierBookById(long userId) {
         for (ShoppingCartHelper item : supplierBookShoppingCart) {
             if (item.getId() == userId)
                 return item.getSupplierBookListCart();

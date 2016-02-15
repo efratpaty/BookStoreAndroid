@@ -32,7 +32,8 @@
         android:id="@+id/requestButton"
         android:layout_gravity="center_horizontal"
         android:textColor="#ffffff"
-        android:background="@drawable/my_button"/>
+        android:background="@drawable/my_button"
+        android:onClick="addRequestClick" />
 
 </RelativeLayout>
 

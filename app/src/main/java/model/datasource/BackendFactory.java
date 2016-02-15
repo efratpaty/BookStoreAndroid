@@ -10,7 +10,7 @@ import model.backend.PoolFunctions;
 public class BackendFactory {
     static PoolFunctions instance = null;
 
-    public static String mode = "lists";
+    public static String mode = "mysql";
 
     public final static PoolFunctions getInstance(Context context)
     {

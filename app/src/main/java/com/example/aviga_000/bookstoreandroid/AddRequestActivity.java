@@ -20,7 +20,7 @@ public class AddRequestActivity extends AppCompatActivity {
 
     final PoolFunctions backend = BackendFactory.getInstance(this);
     Intent rIntent = null;
-    int id = 0;
+    Long id = 0L;
     int bookId = 0;
 
 
@@ -30,14 +30,13 @@ public class AddRequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_request);
 
         rIntent = getIntent();
-        id = rIntent.getIntExtra("user_id", 0);
+        id = rIntent.getLongExtra("user_id", 0);
         bookId = rIntent.getIntExtra("book_id", 0);
         TextView userid = (TextView)findViewById(R.id.customerIdText);
         userid.setText(String.valueOf(id));
         userid.setEnabled(false);
         TextView bookid = (TextView)findViewById(R.id.bookIdText);
         bookid.setText(String.valueOf(bookId));
-        bookid.setEnabled(false);
 
 
 
