@@ -15,6 +15,7 @@ import StoreJavaClass.Book;
 import StoreJavaClass.Order;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 /**
  * Created by efrat on 1/27/16.
@@ -24,10 +25,14 @@ public class HAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList<Integer> data;
     private static LayoutInflater inflater=null;
+    StoreMySql _storeMySql;
+
     PoolFunctions backend = BackendFactory.getInstance(activity);
+    ArrayList<Book> _books = new ArrayList<Book>();
 
     public HAdapter(Activity activity, ArrayList<Integer> data) {
         this.activity = activity;
+        _storeMySql = new StoreMySql(activity);
         this.data = data;
     }
 
@@ -61,13 +66,22 @@ public class HAdapter extends BaseAdapter {
         }
         ImageView imageView = (ImageView) vi.findViewById(R.id.bookImageView);
 
-            ArrayList<Book> _books = backend.bookList();
+        synchronized (_books = backend.bookList()) {
+            if(_storeMySql.done == false)
+            {
+                try {
+                    _books.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             for (Book b : _books) {
-                if (data.get(position)==b.getBookId()) {
+                if (data.get(position) == b.getBookId()) {
 
                     Picasso.with(activity).load(b.getUrl()).into(imageView);
                 }
             }
-        return vi;
+            return vi;
+        }
     }
 }

@@ -23,6 +23,7 @@ import StoreJavaClass.BookCondition;
 import StoreJavaClass.SupplierBook;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 public class SupplierBooksActivity extends NavActivity {
 
@@ -31,6 +32,7 @@ public class SupplierBooksActivity extends NavActivity {
     Intent intent = null;
     Intent intentRecieve = null;
     final PoolFunctions backend = BackendFactory.getInstance(this);
+    StoreMySql _storeMySql = new StoreMySql(this);
     int userType = 0;
     Long userId = 0L;
     int bookId = 0;
@@ -38,7 +40,7 @@ public class SupplierBooksActivity extends NavActivity {
     Button button = null;
     BookCondition condition = null;
     ArrayList<SupplierBook> _supplierBooks = new ArrayList<SupplierBook>();
-
+    ArrayList <SupplierBook> supplierBookList = new ArrayList<SupplierBook>();
     final Activity activity = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,52 +58,59 @@ public class SupplierBooksActivity extends NavActivity {
             button.setVisibility(View.INVISIBLE);
         }
 
-        ArrayList <SupplierBook> supplierBookList =backend.supplierBookList();
+        synchronized (supplierBookList =backend.supplierBookList()) {
 
-        int request = intentRecieve.getIntExtra("request", 0);
-        if (request == 1) {//if activity was open from book requests recieve price and condition and find all books that stand for the right criterion
-            price = intentRecieve.getFloatExtra("price", 0);
-            condition = BookCondition.valueOf(intentRecieve.getStringExtra("condition"));
-            ArrayList <Book> _books =backend.books;
-            for (Book book:_books) {
-                if (book.getBookId() == bookId) {
-                    _supplierBooks = backend.searchBooks(book.getBookName(), book.getAuthor(), null, price, condition);
-                    break;
+            if (_storeMySql.done == false)
+            {
+                try {
+                    supplierBookList.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            int request = intentRecieve.getIntExtra("request", 0);
+            if (request == 1) {//if activity was open from book requests recieve price and condition and find all books that stand for the right criterion
+                price = intentRecieve.getFloatExtra("price", 0);
+                condition = BookCondition.valueOf(intentRecieve.getStringExtra("condition"));
+                ArrayList<Book> _books = backend.books;
+                for (Book book : _books) {
+                    if (book.getBookId() == bookId) {
+                        _supplierBooks = backend.searchBooks(book.getBookName(), book.getAuthor(), null, price, condition);
+                        break;
+                    }
+
+                }
+            } else if (bookId != 0)
+                for (SupplierBook sb : supplierBookList) {
+                    if (sb.getBookId() == bookId)
+                        _supplierBooks.add(sb);
+                }
+            else if (bookId == 0 && userType == 2)
+                for (SupplierBook sb : supplierBookList) {
+                    if (sb.getSupplierId() == userId)
+                        _supplierBooks.add(sb);
                 }
 
-            }
+            else _supplierBooks = backend.supplierBookList();
+
+            mList = (ListView) findViewById(R.id.supplierBookslistView);//find supplierbook listView on activity xml
+            mAdapter = new SupplierBookAdapter(SupplierBooksActivity.this, _supplierBooks);
+            mList.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+
+            mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                    Intent sbi = new Intent(SupplierBooksActivity.this, ShowBookActivity.class);
+                    int supplierBookId = _supplierBooks.get(position).getId();
+                    sbi.putExtra("book_id", supplierBookId);
+                    sbi.putExtra("user", userType);
+                    sbi.putExtra("user_id", userId);
+                    startActivity(sbi);
+                }
+            });
         }
-        else
-        if (bookId != 0)
-            for (SupplierBook sb :supplierBookList) {
-                if (sb.getBookId() == bookId)
-                   _supplierBooks.add(sb);
-            }
-        else
-        if (bookId == 0 && userType == 2)
-            for (SupplierBook sb :supplierBookList) {
-                if (sb.getSupplierId() == userId)
-                    _supplierBooks.add(sb);
-            }
-
-        else _supplierBooks = backend.supplierBookList();
-
-        mList = (ListView)findViewById(R.id.supplierBookslistView);//find supplierbook listView on activity xml
-        mAdapter = new SupplierBookAdapter(SupplierBooksActivity.this, _supplierBooks);
-        mList.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent sbi = new Intent(SupplierBooksActivity.this, ShowBookActivity.class);
-                int supplierBookId = _supplierBooks.get(position).getId();
-                sbi.putExtra("book_id", supplierBookId);
-                sbi.putExtra("user", userType);
-                sbi.putExtra("user_id", userId);
-                startActivity(sbi);
-            }
-        });
 
     }
 

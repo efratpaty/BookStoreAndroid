@@ -24,11 +24,15 @@ import java.util.ArrayList;
 import StoreJavaClass.Complains;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 public class ManagerComplaintsActivity extends NavActivity {
 
     private ListView mList;
     private  ComplaintAdapter mAdapter;
+    ArrayList <Complains> _complainses = new ArrayList<Complains>();
+    StoreMySql _storeMySql = new StoreMySql(this);
+
 
     final PoolFunctions backend = BackendFactory.getInstance(this);
     Intent intentRecieve = null;
@@ -52,24 +56,34 @@ public class ManagerComplaintsActivity extends NavActivity {
 
 
         mList = (ListView)findViewById(R.id.complaintslistView);//find complains listView on activity xml
-        mAdapter = new ComplaintAdapter(ManagerComplaintsActivity.this,backend.complainsList());
-        mList.setAdapter(mAdapter);
-        userId = intentRecieve.getLongExtra("user_id", 0);
+        synchronized (_complainses = backend.complainsList()) {
 
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent sbi = new Intent(ManagerComplaintsActivity.this, ComplaintsActivity.class);
-                sbi.putExtra("complaint_id", backend.complainses.get(position).getComplaintId());
-                sbi.putExtra("user_id", userId);
-                sbi.putExtra("user", userType);
-                startActivity(sbi);
+            if (_storeMySql.done == false)
+            {
+                try {
+                    _complainses.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+            mAdapter = new ComplaintAdapter(ManagerComplaintsActivity.this, _complainses);
+            mList.setAdapter(mAdapter);
+            userId = intentRecieve.getLongExtra("user_id", 0);
 
-        mActivityTitle = getTitle().toString();
+            mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                    Intent sbi = new Intent(ManagerComplaintsActivity.this, ComplaintsActivity.class);
+                    sbi.putExtra("complaint_id", backend.complainses.get(position).getComplaintId());
+                    sbi.putExtra("user_id", userId);
+                    sbi.putExtra("user", userType);
+                    startActivity(sbi);
+                }
+            });
 
+            mActivityTitle = getTitle().toString();
 
+        }
     }
 
     public void onSearchClick(View view)

@@ -19,12 +19,16 @@ import StoreJavaClass.BookCondition;
 import StoreJavaClass.BookSearch;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 import static java.lang.String.*;
 
 public class UpdateRequest extends AppCompatActivity {
 
     final PoolFunctions backend = BackendFactory.getInstance(this);
+    ArrayList<BookSearch> _bookSearches = new ArrayList<BookSearch>();
+    StoreMySql _storeMySql = new StoreMySql(this);
+
     Intent rIntent = null;
     Long id = null;
 
@@ -59,56 +63,59 @@ public class UpdateRequest extends AppCompatActivity {
 
     }
 
-    public void updateOnClick (View view)
-    {
+    public void updateOnClick (View view) throws InterruptedException {
         int bookId = Integer.parseInt(((EditText) findViewById(R.id.bookIdText)).getText().toString());//get user input book id
         Long buyerId = Long.parseLong(((EditText) findViewById(R.id.customerIdText)).getText().toString());//get from form buyer id
         String email = ((EditText) findViewById(R.id.emailText)).getText().toString();
         BookCondition condition = BookCondition.valueOf(((EditText) findViewById(R.id.conditionAutoCompleteTextView)).getText().toString());
         float maxPrice = Float.parseFloat(((EditText) findViewById(R.id.maxPriceText)).getText().toString());
-        boolean send = ((CheckBox)findViewById(R.id.sendMessageCheckBox)).isSelected();//convert checkBox value to boolean value
+        boolean send = ((CheckBox) findViewById(R.id.sendMessageCheckBox)).isSelected();//convert checkBox value to boolean value
         BookSearch request = new BookSearch(bookId, buyerId, email, condition, maxPrice, send);
 
-        ArrayList<BookSearch> _bookSearches = backend.bookSearchList();
         ArrayList<Book> _books = backend.books;
+        synchronized (_bookSearches = backend.bookSearchList()) {
 
-
-        if (!_bookSearches.contains(request.getBookSearchId()))//if list of all books requests does not contain requested search id
-            System.out.println("ERROR: book does not exist in the system");
-        //check if there is a book that meets all client requests
-        for (BookSearch bs:_bookSearches) {
-            if (bs.getCustomerId() == request.getCustomerId() && request.getBookId() == bs.getBookId()) {
-                new AlertDialog.Builder(this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Book Found!")
-                        .setMessage("We found a book that meets you requirements. You are now being transferred to book searching")
-                        .setPositiveButton("OK", null)
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .show();
-                for (Book b : _books) {
-                    if (b.getBookId() == request.getBookId()) {
-                        Intent intent = new Intent(this, SupplierBooksActivity.class);
-                        intent.putExtra("book_id", b.getBookId());
-                        intent.putExtra("condition", String.valueOf(request.getBookCondition()));
-                        intent.putExtra("price", request.getMaxPrice());
-                        intent.putExtra("request", 1);
-                        startActivity(intent);
+            if (_storeMySql.done == false)
+            {
+               _bookSearches.wait(500);
+            }
+            if (!_bookSearches.contains(request.getBookSearchId()))//if list of all books requests does not contain requested search id
+                System.out.println("ERROR: book does not exist in the system");
+            //check if there is a book that meets all client requests
+            for (BookSearch bs : _bookSearches) {
+                if (bs.getCustomerId() == request.getCustomerId() && request.getBookId() == bs.getBookId()) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Book Found!")
+                            .setMessage("We found a book that meets you requirements. You are now being transferred to book searching")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .show();
+                    for (Book b : _books) {
+                        if (b.getBookId() == request.getBookId()) {
+                            Intent intent = new Intent(this, SupplierBooksActivity.class);
+                            intent.putExtra("book_id", b.getBookId());
+                            intent.putExtra("condition", String.valueOf(request.getBookCondition()));
+                            intent.putExtra("price", request.getMaxPrice());
+                            intent.putExtra("request", 1);
+                            startActivity(intent);
+                        }
                     }
+                    return;
                 }
-                return;
             }
-        }
-        //can update only selected fields
-        for (BookSearch bs:_bookSearches) {
-            if(bs.getBookSearchId() == request.getBookSearchId()) {
-                int indexl = _bookSearches.indexOf(bs);
-                bs.setBookCondition(request.getBookCondition());
-                bs.setMaxPrice(request.getMaxPrice());
-                bs.setSendMessage(request.isSendMessage());
-                backend.bookSearchings.set(indexl, bs);
+            //can update only selected fields
+            for (BookSearch bs : _bookSearches) {
+                if (bs.getBookSearchId() == request.getBookSearchId()) {
+                    int indexl = _bookSearches.indexOf(bs);
+                    bs.setBookCondition(request.getBookCondition());
+                    bs.setMaxPrice(request.getMaxPrice());
+                    bs.setSendMessage(request.isSendMessage());
+                    backend.bookSearchings.set(indexl, bs);
+                }
             }
-        }
 
-        backend.updateBookSearch(request);//send to func to add request
+            backend.updateBookSearch(request);//send to func to add request
+        }
     }
 }

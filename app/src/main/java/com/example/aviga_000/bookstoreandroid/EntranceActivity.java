@@ -28,6 +28,9 @@ public class EntranceActivity extends AppCompatActivity {
     PoolFunctions backend = BackendFactory.getInstance(this);
     final Activity activity = this;
     Intent intent = null;
+    ArrayList<Supplier> suppliers = new ArrayList<Supplier>();
+    ArrayList<Buyer> buyers = new ArrayList<Buyer>();
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,8 +109,8 @@ public class EntranceActivity extends AppCompatActivity {
     public void userAuthentication(String userName, String password) throws Exception {
 
         StoreMySql storeMySql = new StoreMySql(this);
-        ArrayList<Supplier> suppliers= storeMySql.supplierListForSignIn(userName,password,activity);
-        ArrayList<Buyer> buyers= storeMySql.buyerListForSignIn(userName, password, activity);
+        suppliers= storeMySql.supplierListForSignIn(userName,password,activity);
+        buyers= storeMySql.buyerListForSignIn(userName, password, activity);
 
         buyers.isEmpty();
         suppliers.isEmpty();

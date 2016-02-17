@@ -179,7 +179,9 @@ import javax.mail.internet.InternetAddress;
         //search book according to the inserted value
         ArrayList<SupplierBook> SPbooks = new ArrayList<SupplierBook>();//initialize list to contain all the books that stand to the conditions
         ArrayList<Integer> idbooks = new ArrayList<Integer>();//initialize list to contain all the book ids
-        for (Book sp : bookList()) {//for each book check all the conditions
+        SPbooks.clear();
+        idbooks.clear();
+        for (Book sp : books) {//for each book check all the conditions
             if ((name .equals( null) || name.equals( "")  || sp.getBookName().toLowerCase().contains(name.toLowerCase()))
                     && (author.equals(null) || author.equals("") || sp.getAuthor().toLowerCase().contains( author.toLowerCase()))
                     && (subject == (null) || subject == Subject.ALL_SUBJECTS || sp.getSubject().equals(subject)))
@@ -187,7 +189,7 @@ import javax.mail.internet.InternetAddress;
         }
         for (int id:idbooks) {
 
-            for (SupplierBook sp : supplierBookList()) {//for each book check all the conditions
+            for (SupplierBook sp : supplierBooks) {//for each book check all the conditions
                 if (sp.getBookId() == id && (price == 0L || sp.getPrice() <= price)
                         && (condition == null || condition == BookCondition.ALL_CONDITIONS || sp.getBookCondition() == condition))
                     SPbooks.add(sp);//add book to the list if he stand to all the conditions

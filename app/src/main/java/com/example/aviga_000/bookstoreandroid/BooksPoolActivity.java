@@ -28,11 +28,16 @@ import StoreJavaClass.Subject;
 import StoreJavaClass.SupplierBook;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
+
 import android.widget.BaseAdapter;
 
 public class BooksPoolActivity extends NavActivity {
 
     PoolFunctions backend = BackendFactory.getInstance(this);
+    StoreMySql _storeMySql = new StoreMySql(this);
+    ArrayList<SupplierBook> searchBooks = new ArrayList<SupplierBook>();
+    ArrayList<SupplierBook> _supplierBooks = new ArrayList<SupplierBook>();
     private ListView mList;
     private booksAdapter mAdapter;
     private SupplierBookAdapter sAdapter;
@@ -41,6 +46,7 @@ public class BooksPoolActivity extends NavActivity {
     int userType;
     Button button = null;
     Intent intent = new Intent();
+    ArrayList <Book> _books = new ArrayList<Book>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,49 +66,63 @@ public class BooksPoolActivity extends NavActivity {
 
         mList = (ListView) findViewById(R.id.bookListView);//find book listView on activity xml
 
-        mAdapter = new booksAdapter(BooksPoolActivity.this, backend.bookList());
-        mList.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
-        userId = intentRecieve.getLongExtra("user_id", 0);
-
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent sbi = new Intent(BooksPoolActivity.this, SupplierBooksActivity.class);
-                int bookId = backend.books.get(position).getBookId();
-                sbi.putExtra("book_id", bookId);
-                sbi.putExtra("user_id", userId);
-                sbi.putExtra("user", userType);
-                startActivity(sbi);
+        synchronized (_books = backend.bookList()) {
+            if (_storeMySql.done == false) {
+                try {
+                    _books.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+                    mAdapter = new booksAdapter(BooksPoolActivity.this, _books);
+                    mList.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
 
-    }
+                    userId = intentRecieve.getLongExtra("user_id", 0);
 
+                    mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+                            Intent sbi = new Intent(BooksPoolActivity.this, SupplierBooksActivity.class);
+                            int bookId = backend.books.get(position).getBookId();
+                            sbi.putExtra("book_id", bookId);
+                            sbi.putExtra("user_id", userId);
+                            sbi.putExtra("user", userType);
+                            startActivity(sbi);
+                        }
+                    });
+                }
+            }
 
-    public void onSearchBookClick(View view) {//when user click on search icon, send search details to function and display result
+    public void onSearchBookClick(View view) throws InterruptedException {//when user click on search icon, send search details to function and display result
+        mList.setAdapter(null);
         Subject subject = null;
         float price = 0L;
         BookCondition bookCondition = null;
         String nameBook = ((EditText) findViewById(R.id.bookPoolNameText)).getText().toString();//get user input
         String author = ((EditText) findViewById(R.id.bookPoolAuthorText)).getText().toString();//get user input
         String sSubject = ((EditText) findViewById(R.id.bookPoolSubjectTextView)).getText().toString();
-        if (!sSubject.equals("") && !sSubject.equals(null) )
+        if (!sSubject.equals("") && !sSubject.equals(null))
             subject = Subject.valueOf(sSubject);//get user input
         String sPrice = ((EditText) findViewById(R.id.bookPoolPriceText)).getText().toString();
-        if (!sPrice.equals("") && !sPrice.equals(null) )
+        if (!sPrice.equals("") && !sPrice.equals(null))
             price = Float.parseFloat(sPrice);//get user input
         String sCondition = ((EditText) findViewById(R.id.bookPoolConditiononditionTextView)).getText().toString();
-        if (!sCondition.equals("") && !sCondition.equals(null) )
-        bookCondition = BookCondition.valueOf(sCondition);//get user input
+        if (!sCondition.equals("") && !sCondition.equals(null))
+            bookCondition = BookCondition.valueOf(sCondition);//get user input
 
         //send to func to find all the query resualt
-        ArrayList<SupplierBook> searchBooks = (ArrayList<SupplierBook>) backend.searchBooks(nameBook, author, subject, price, bookCondition);//send to func to find all the query result and save them in an array
-        sAdapter = new SupplierBookAdapter(BooksPoolActivity.this, searchBooks);//set list items as the query results
-        mList.invalidateViews();
-        mList.setAdapter(sAdapter);
-        sAdapter.notifyDataSetChanged();
+        synchronized (_supplierBooks = backend.supplierBookList()) {
+            if (_storeMySql.done == false)
+            {
+                _supplierBooks.wait(500);
+            }
+            searchBooks.clear();
+            searchBooks = (ArrayList<SupplierBook>) backend.searchBooks(nameBook, author, subject, price, bookCondition);//send to func to find all the query result and save them in an array
+            sAdapter = new SupplierBookAdapter(BooksPoolActivity.this, searchBooks);//set list items as the query results
+            mList.setAdapter(sAdapter);
+            sAdapter.notifyDataSetChanged();
+        }
     }
 
     public void onNewClick(View view) {//on clicking new button open add book activity

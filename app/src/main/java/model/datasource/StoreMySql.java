@@ -54,6 +54,8 @@ public class StoreMySql implements PoolFunctions {
 
     public static final String web_url = "http://halevis.vlab.jct.ac.il/";
 
+    public boolean done = false;
+
     public final PoolFunctions list;
 
     public StoreMySql(Context context) {
@@ -260,7 +262,7 @@ public class StoreMySql implements PoolFunctions {
 
 
     public ArrayList<Buyer> buyerListForSignIn(final String userName, final String password, final Activity activity)throws Exception{
-
+        done = false;
         try {
             new AsyncTask<Void, Void, ArrayList<Buyer>>() {
 
@@ -300,6 +302,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Buyer> myBuyersList) {
+
                     Intent intent = null;
 
                 //if user was not found, search buyer list for username and password1 if found make intent buyer activity
@@ -311,6 +314,7 @@ public class StoreMySql implements PoolFunctions {
                                 intent.putExtra("user_id", b.getId());
                                 intent.putExtra("user", 1);
                                 activity.startActivity(intent);
+                                activity.finish();
 
                             }
                         }
@@ -333,7 +337,8 @@ public class StoreMySql implements PoolFunctions {
                                         .setIcon(android.R.drawable.stat_notify_error)
                                         .show();
                             }
-                        }
+                    done = true;
+                }
             }.execute();
 
 
@@ -349,7 +354,7 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Buyer> buyerList()throws Exception{
-
+        done = false;
         try {
             new AsyncTask<Void, Void, ArrayList<Buyer>>() {
 
@@ -375,6 +380,7 @@ public class StoreMySql implements PoolFunctions {
                             tempBuyer.setZipCode(buyersList.getJSONObject(i).getInt("zipCode"));
 
                             buyers.add(tempBuyer);
+
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -389,7 +395,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Buyer> myBuyersList) {
-
+                    done = true;
                 }
             }.execute().get();
 
@@ -472,12 +478,12 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<SupplierBook> searchBooks(String bookName, String author, Subject subject, float price, BookCondition condition) {
-        return null;
+        return list.searchBooks(bookName, author, subject, price, condition);
     }
 
     @Override
     public ArrayList<Book> bookList() {
-
+        done = false;
         try {
             new AsyncTask<Void, Void, ArrayList<Book>>() {
 
@@ -545,6 +551,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Book> myBooksList) {
+                    done = true;
                 }
             }.execute();
         }
@@ -679,6 +686,8 @@ public class StoreMySql implements PoolFunctions {
     @Override
     public ArrayList<Supplier> supplierList() {
 
+        done = false;
+
         try {
             new AsyncTask<Void, Void, ArrayList<Supplier>>() {
 
@@ -716,6 +725,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Supplier> mySuppliersList) {
+                    done = true;
                 }
             }.execute();
         }
@@ -728,6 +738,7 @@ public class StoreMySql implements PoolFunctions {
 
     public ArrayList<Supplier> supplierListForSignIn(final String userName, final String password, final Activity activity) {
 
+        done = false;
         try {
             new AsyncTask<Void, Void, ArrayList<Supplier>>() {
 
@@ -783,6 +794,7 @@ public class StoreMySql implements PoolFunctions {
                             }
                         }
                     }
+                    done =  true;
                 }
             }.execute();
         }
@@ -890,6 +902,8 @@ public class StoreMySql implements PoolFunctions {
     @Override
     public ArrayList<SupplierBook> supplierBookList() {
 
+        done = false;
+
         try {
             new AsyncTask<Void, Void, ArrayList<SupplierBook>>() {
 
@@ -924,6 +938,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<SupplierBook> mySupplierBooksList) {
+                    done = true;
                 }
             }.execute();
         }
@@ -1021,6 +1036,9 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Order> orderList() {
+
+        done = false;
+
         try {
             new AsyncTask<Void, Void, ArrayList<Order>>() {
 
@@ -1081,6 +1099,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Order> myOrdersList) {
+                    done = true;
                 }
             }.execute();
         }
@@ -1206,6 +1225,9 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<BookSearch> bookSearchList() {
+
+        done = false;
+
         try {
             new AsyncTask<Void, Void, ArrayList<BookSearch>>() {
 
@@ -1241,6 +1263,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<BookSearch> myRequestsList) {
+                    done = true;
                 }
             }.execute();
         }
@@ -1350,6 +1373,9 @@ public class StoreMySql implements PoolFunctions {
 
     @Override
     public ArrayList<Complains> complainsList() {
+
+        done = false;
+
         try {
             new AsyncTask<Void, Void, ArrayList<Complains>>() {
 
@@ -1379,6 +1405,7 @@ public class StoreMySql implements PoolFunctions {
 
                 @Override
                 protected void onPostExecute(ArrayList<Complains> myComplaintsList) {
+                    done = true;
                 }
             }.execute();
         }

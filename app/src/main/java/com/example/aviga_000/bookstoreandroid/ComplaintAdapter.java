@@ -16,6 +16,7 @@ import StoreJavaClass.Complains;
 import StoreJavaClass.Supplier;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 /**
  * Created by User on 18/01/2016.
@@ -26,10 +27,16 @@ public class ComplaintAdapter extends BaseAdapter {
     private ArrayList<Complains> data;
     private static LayoutInflater inflater=null;
     PoolFunctions backend = BackendFactory.getInstance(activity);
+    ArrayList <Buyer> _buyers = new ArrayList<Buyer>();
+    ArrayList<Supplier> _suppliers = new ArrayList<Supplier>();
+    StoreMySql _storeMySql;
+
 
     //CONSTRACTURE
     public ComplaintAdapter(Activity activity, ArrayList<Complains> data) {
+
         this.activity = activity;
+        _storeMySql = new StoreMySql(activity);
         this.data = data;
     }
 
@@ -64,34 +71,41 @@ public class ComplaintAdapter extends BaseAdapter {
         TextView complainantId = (TextView) vi.findViewById(R.id.idText1);
         TextView dId = (TextView) vi.findViewById(R.id.idText2);
 
-        ArrayList<Supplier> _suppliers = backend.supplierList();
-        for (Supplier s: _suppliers)
-        {
-           if (s.getId() == data.get(position).getComplainantId())
-           {
-               complainantFirst.setText(s.getFirstName());
-               complainantLast.setText(s.getLastName());
-           }
-            if (s.getId() == data.get(position).getDefendantId())
-            {
-                dFirst.setText(s.getFirstName());
-                dLast.setText(s.getLastName());
+        synchronized (_suppliers = backend.supplierList()) {
+            if (_storeMySql.done == false) {
+                try {
+                    _suppliers.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (Supplier s : _suppliers) {
+                if (s.getId() == data.get(position).getComplainantId()) {
+                    complainantFirst.setText(s.getFirstName());
+                    complainantLast.setText(s.getLastName());
+                }
+                if (s.getId() == data.get(position).getDefendantId()) {
+                    dFirst.setText(s.getFirstName());
+                    dLast.setText(s.getLastName());
+                }
             }
         }
 
         try {
-            ArrayList <Buyer> _buyers = backend.buyerList();
-            for (Buyer s: _buyers)
-            {
-                if (s.getId() == data.get(position).getComplainantId())
+            synchronized (_buyers = backend.buyerList()) {
+                if (_storeMySql.done == false)
                 {
-                    complainantFirst.setText(s.getFirstName());
-                    complainantLast.setText(s.getLastName());
+                    _buyers.wait(500);
                 }
-                if (s.getId() == data.get(position).getDefendantId())
-                {
-                    dFirst.setText(s.getFirstName());
-                    dLast.setText(s.getLastName());
+                for (Buyer s : _buyers) {
+                    if (s.getId() == data.get(position).getComplainantId()) {
+                        complainantFirst.setText(s.getFirstName());
+                        complainantLast.setText(s.getLastName());
+                    }
+                    if (s.getId() == data.get(position).getDefendantId()) {
+                        dFirst.setText(s.getFirstName());
+                        dLast.setText(s.getLastName());
+                    }
                 }
             }
         } catch (Exception e) {

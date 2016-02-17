@@ -23,10 +23,12 @@ import StoreJavaClass.Book;
 import StoreJavaClass.BookSearch;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 public class BookRequestsActivity extends NavActivity {
 
     final PoolFunctions _backend = BackendFactory.getInstance(this);
+    StoreMySql _storeMySql = new StoreMySql(this);
     Intent intent  = new Intent();
     private static final List<String> bookNames = new ArrayList<String>();
     private static final List<String> authorsNames = new ArrayList<String>();
@@ -35,6 +37,7 @@ public class BookRequestsActivity extends NavActivity {
     Intent intentRecieve = null;
     int userType = 0;
     Long userId = 0L;
+    ArrayList<BookSearch> requests = new ArrayList<BookSearch>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,8 +52,18 @@ public class BookRequestsActivity extends NavActivity {
 
         mList = (ListView)findViewById(R.id.RequestsListView);//find requests listView on activity xml
         //needs to change after changing bundle
-        ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
-        addListItems(requests);//send to func to set requests list items
+        synchronized (requests = _backend.bookSearchList()) {//get all requests
+            if (_storeMySql.done == false) {
+                try {
+                    requests.wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            addListItems(requests);//send to func to set requests list items
+
+        }
+
 
         ArrayList <Book> _books = _backend.books;
         for (Book book:_books ) {
@@ -95,17 +108,24 @@ public class BookRequestsActivity extends NavActivity {
 
     }
 
-    public  void allClick(View view)
-    {
-        ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
-        addListItems(requests);//send to func to set requests list items
+    public  void allClick(View view) throws InterruptedException {
+        synchronized (requests = _backend.bookSearchList()) {//get all requests
+            if (_storeMySql.done == false) {
+
+                requests.wait(500);
+            }
+            addListItems(requests);//send to func to set requests list items
+            }
     }
 
-    public  void myRequestsClick(View view)
-    {
-    //change to show only customer requests
-        ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
-        addListItems(requests);//send to func to set requests list items
+    public  void myRequestsClick(View view) throws InterruptedException {
+        synchronized (requests = _backend.bookSearchList()) {//get all requests
+            if (_storeMySql.done == false) {
+
+                requests.wait(500);
+            }
+            addListItems(requests);//send to func to set requests list items
+        }
     }
 
     @Override
