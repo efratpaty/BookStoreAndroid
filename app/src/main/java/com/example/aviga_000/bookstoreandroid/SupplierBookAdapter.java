@@ -68,7 +68,8 @@ public class SupplierBookAdapter extends BaseAdapter {
         TextView price=(TextView)vi.findViewById(R.id.priceTextView);
         ImageView imageView = (ImageView)vi.findViewById(R.id.imageViewItem);
 
-        for (Book b: backend.bookList()) {
+        ArrayList <Book> _books = backend.books;
+        for (Book b: _books) {
             if (data.get(position).getBookId() == b.getBookId()) {
                 name.setText(b.getBookName());
                 author.setText(b.getAuthor());

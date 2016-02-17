@@ -173,7 +173,8 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/back"
                 android:hint="Password:"
-                android:textColorHint="#d42e2e" />
+                android:textColorHint="#d42e2e"
+                android:onClick="onPasswordClick" />
 
             <TextView
                 android:layout_width="wrap_content"

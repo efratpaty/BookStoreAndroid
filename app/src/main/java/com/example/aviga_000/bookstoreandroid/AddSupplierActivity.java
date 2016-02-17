@@ -152,11 +152,11 @@ public class AddSupplierActivity extends AppCompatActivity {
             final Supplier supplier = new Supplier(password, firstName, lastName, id, phone, email, city, street, buildingNumber, houseNumber, zipCode);
             backend.addSupplier(supplier);//send to function to add supplier
             final Intent intent = new Intent(this, BooksPoolActivity.class);
-            intent.putExtra("user_id", supplier.getId());
+            intent.putExtra("user_id", id);
             intent.putExtra("user", 2);
-            startActivity(intent);//open buyer activity
+            startActivity(intent);//open supplier activity
 
-/*            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("WELCOME :)")
                     .setMessage("You are now loged in")
@@ -167,7 +167,7 @@ public class AddSupplierActivity extends AppCompatActivity {
                             AddSupplierActivity.this.finish();
                         }
                     })
-                    .show();*/
+                    .show();
         }
     }
 }

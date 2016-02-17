@@ -12,14 +12,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SupplierBook implements Serializable
 {
-    private static final AtomicInteger count = new AtomicInteger(1000);//variable for auto generating id
+    public static AtomicInteger count = new AtomicInteger(2000);//variable for auto generating id
     private int id;
     private int bookId;
     private long supplierId;
     private int copies;
     private double price;
     private BookCondition bookCondition;
-    //default constructor
 
 
     public SupplierBook( int bookId, long supplierId, int copies, double price, BookCondition bookCondition) {
@@ -29,6 +28,11 @@ public class SupplierBook implements Serializable
         this.copies = copies;
         this.price = price;
         this.bookCondition = bookCondition;
+    }
+
+    //default constructor
+    public SupplierBook() {
+
     }
 
     //setters & getters

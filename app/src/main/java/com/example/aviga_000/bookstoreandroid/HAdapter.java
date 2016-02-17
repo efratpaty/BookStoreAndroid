@@ -31,6 +31,8 @@ public class HAdapter extends BaseAdapter {
         this.data = data;
     }
 
+
+
     @Override
     public int getCount() {
         return data.size();
@@ -59,8 +61,8 @@ public class HAdapter extends BaseAdapter {
         }
         ImageView imageView = (ImageView) vi.findViewById(R.id.bookImageView);
 
-
-            for (Book b : backend.bookList()) {
+            ArrayList<Book> _books = backend.bookList();
+            for (Book b : _books) {
                 if (data.get(position)==b.getBookId()) {
 
                     Picasso.with(activity).load(b.getUrl()).into(imageView);

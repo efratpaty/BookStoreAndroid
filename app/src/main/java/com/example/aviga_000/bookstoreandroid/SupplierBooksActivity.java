@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -34,8 +35,9 @@ public class SupplierBooksActivity extends NavActivity {
     Long userId = 0L;
     int bookId = 0;
     float price = 0;
+    Button button = null;
     BookCondition condition = null;
-    ArrayList<SupplierBook> supplierBooks = new ArrayList<SupplierBook>();
+    ArrayList<SupplierBook> _supplierBooks = new ArrayList<SupplierBook>();
 
     final Activity activity = this;
     @Override
@@ -48,13 +50,22 @@ public class SupplierBooksActivity extends NavActivity {
         userType = intentRecieve.getIntExtra("user", 0);
         userId = intentRecieve.getLongExtra("user_id", 0);
         bookId = intentRecieve.getIntExtra("book_id", 0);
+
+        button = (Button)findViewById(R.id.addSupplierBookBtn);
+        if (userType != 2 && userType != 3) {
+            button.setVisibility(View.INVISIBLE);
+        }
+
+        ArrayList <SupplierBook> supplierBookList =backend.supplierBookList();
+
         int request = intentRecieve.getIntExtra("request", 0);
         if (request == 1) {//if activity was open from book requests recieve price and condition and find all books that stand for the right criterion
             price = intentRecieve.getFloatExtra("price", 0);
             condition = BookCondition.valueOf(intentRecieve.getStringExtra("condition"));
-            for (Book book:backend.books) {
+            ArrayList <Book> _books =backend.books;
+            for (Book book:_books) {
                 if (book.getBookId() == bookId) {
-                    supplierBooks = backend.searchBooks(book.getBookName(), book.getAuthor(), null, price, condition);
+                    _supplierBooks = backend.searchBooks(book.getBookName(), book.getAuthor(), null, price, condition);
                     break;
                 }
 
@@ -62,22 +73,30 @@ public class SupplierBooksActivity extends NavActivity {
         }
         else
         if (bookId != 0)
-            for (SupplierBook sb :backend.supplierBookList()) {
+            for (SupplierBook sb :supplierBookList) {
                 if (sb.getBookId() == bookId)
-                   supplierBooks.add(sb);
+                   _supplierBooks.add(sb);
             }
-        else supplierBooks = backend.supplierBookList();
+        else
+        if (bookId == 0 && userType == 2)
+            for (SupplierBook sb :supplierBookList) {
+                if (sb.getSupplierId() == userId)
+                    _supplierBooks.add(sb);
+            }
+
+        else _supplierBooks = backend.supplierBookList();
 
         mList = (ListView)findViewById(R.id.supplierBookslistView);//find supplierbook listView on activity xml
-         mAdapter = new SupplierBookAdapter(SupplierBooksActivity.this, supplierBooks);
+        mAdapter = new SupplierBookAdapter(SupplierBooksActivity.this, _supplierBooks);
         mList.setAdapter(mAdapter);
-        (mAdapter).notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
 
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 Intent sbi = new Intent(SupplierBooksActivity.this, ShowBookActivity.class);
-                sbi.putExtra("book_id", bookId);
+                int supplierBookId = _supplierBooks.get(position).getId();
+                sbi.putExtra("book_id", supplierBookId);
                 sbi.putExtra("user", userType);
                 sbi.putExtra("user_id", userId);
                 startActivity(sbi);
@@ -117,6 +136,14 @@ public class SupplierBooksActivity extends NavActivity {
         startActivity(intent);
     }
 
+  /*  public void addSupplierBookClick (View view)
+    {
+        intent = new Intent(SupplierBooksActivity.this, AddRequestActivity.class);
+        intent.putExtra("user_id",intentRecieve.getIntExtra("user_id",0));
+        intent.putExtra("book_id", bookId);
+        startActivity(intent);
+    }
+*/
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

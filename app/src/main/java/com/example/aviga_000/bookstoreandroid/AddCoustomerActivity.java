@@ -156,7 +156,7 @@ public class AddCoustomerActivity extends AppCompatActivity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            intent.putExtra("user_id", buyer.getId());
+                            intent.putExtra("user_id", id);
                             intent.putExtra("user", 1);
                             startActivity(intent);//open buyer activity
                         }

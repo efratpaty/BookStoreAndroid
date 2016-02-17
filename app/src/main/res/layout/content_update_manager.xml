@@ -172,7 +172,8 @@
             android:hint="Password: "
             android:textColorHint="@android:color/holo_red_light"
             android:background="@drawable/back"
-            android:textColor="#d72626" />
+            android:textColor="#d72626"
+            android:onClick="onPasswordClick" />
 
         <Space
             android:layout_width="match_parent"

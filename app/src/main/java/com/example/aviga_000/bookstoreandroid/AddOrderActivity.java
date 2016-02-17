@@ -59,9 +59,10 @@ public class AddOrderActivity extends AppCompatActivity {
         HorizontalListView hListView = (HorizontalListView)findViewById(R.id.hlistview);
         hListView.setAdapter(new HAdapter(this, supplierBookId));
 
+        ArrayList <SupplierBook> _supplierBooks = backend.supplierBooks;
         for (int id : supplierBookId) {
 
-            for (SupplierBook sb : backend.supplierBooks) {
+            for (SupplierBook sb : _supplierBooks) {
                 if (sb.getId() == id) {
                     if (sb.getCopies() > 0) {
 

@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Book implements Serializable
 {
-    private static final AtomicInteger count = new AtomicInteger(1000);//variable for auto generating id
+    public static AtomicInteger count = new AtomicInteger(1000);//variable for auto generating id
     private int bookId;
     private String bookName;
     private String author;

@@ -25,6 +25,9 @@
         <item android:id="@+id/order"
             android:icon="@mipmap/ic_orders"
             android:title="Orders"/>
+        <item android:id="@+id/my_books"
+            android:icon="@mipmap/ic_orders"
+            android:title="My Books"/>
     </group>
 
 </menu>

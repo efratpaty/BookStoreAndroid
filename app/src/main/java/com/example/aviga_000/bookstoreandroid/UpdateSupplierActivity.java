@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import StoreJavaClass.Supplier;
 import model.backend.PoolFunctions;
@@ -17,6 +20,8 @@ import model.datasource.BackendFactory;
 
 public class UpdateSupplierActivity extends AppCompatActivity {
 
+    private String o_Text = "";
+    private String n_Text = "";
     PoolFunctions backend = BackendFactory.getInstance(this);
     EditText phoneText;
     EditText emailText;
@@ -39,6 +44,7 @@ public class UpdateSupplierActivity extends AppCompatActivity {
     Long phone = 0L;
     String email = null;
     String password = null;
+    ArrayList<Supplier> _suppliers = new ArrayList<Supplier>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,9 @@ public class UpdateSupplierActivity extends AppCompatActivity {
         houseNumber1 =(TextView)findViewById(R.id.houseText);
         password1 =(TextView)findViewById(R.id.passwordText);
         zipCode1 =(TextView)findViewById(R.id.zipCodeText);
-        for (Supplier s: backend.supplierList()) {
+
+        ArrayList<Supplier> _suppliers = backend.suppliers;
+        for (Supplier s: _suppliers) {
             if ( s.getId() == userId)
             {
                 supplier = s;
@@ -135,6 +143,49 @@ public class UpdateSupplierActivity extends AppCompatActivity {
         });
     }
 
+    public void onPasswordClick(View view) {// when user click on password1 alert dialog that ask him for his current password1 pops up
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please enter your current password1");
+// Set up the input
+        final EditText oldPassword = new EditText(this);
+        final EditText newPassword = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password1, and will mask the text
+        oldPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        oldPassword.setHint("Password:");
+        newPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        newPassword.setHint("New password1:");
+        builder.setView(oldPassword);
+        builder.setView(newPassword);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {//when user click ok
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                o_Text = oldPassword.getText().toString();//get user input (old password1)
+                n_Text = newPassword.getText().toString();//get user input(new password1)
+                if (o_Text != backend.manager.getPassword()) {//if couldnt match user input password1 with saved current password1
+                    final TextView error = new TextView(UpdateSupplierActivity.this);
+                    error.setText("Error wrong password1 please try again");
+                    builder.setView(error);
+                }
+                else {
+                    backend.manager.setPassword(n_Text);
+                    ((EditText)findViewById(R.id.passwordText)).setText(n_Text);
+                }
+                (findViewById(R.id.passwordText)).setEnabled(false);//if user didnt supply valid password1 make passwordEditText  not editable
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                (findViewById(R.id.passwordText)).setEnabled(false);//if user didnt supply valid password1 make passwordEditText  not editable
+            }
+        });
+
+        builder.show();
+    }
+
     public void onUpdateSupplierClick (View view) {
         String firstName = ((EditText) findViewById(R.id.firstNameText)).getText().toString();
         String lastName = ((EditText) findViewById(R.id.lastNameText)).getText().toString();
@@ -147,7 +198,7 @@ public class UpdateSupplierActivity extends AppCompatActivity {
 
         int zipCode = Integer.parseInt((((EditText) findViewById(R.id.zipCodeText)).getText().toString()));
 
-        for (Supplier s: backend.suppliers) {//update details for the buyer
+        for (Supplier s: _suppliers) {//update details for the buyer
             if (s.getId() == userId)
             {
                 if (!TextUtils.isEmpty(firstName))
@@ -170,7 +221,7 @@ public class UpdateSupplierActivity extends AppCompatActivity {
                     s.seteMail(email);
                 if (!TextUtils.isEmpty(String.valueOf(phone)))
                     s.setPhoneNumber(phone);
-
+                backend.updateSupplier(s);
                 final Intent intent = new Intent(this, SupplierBooksActivity.class);
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)

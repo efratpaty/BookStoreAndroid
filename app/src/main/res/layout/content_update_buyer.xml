@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Sign Up"
+                android:text="Personal Details"
                 android:id="@+id/textView32"
                 android:layout_gravity="center_horizontal"
                 android:textColor="#52024d"
@@ -173,7 +173,8 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/back"
                 android:hint="Password:"
-                android:textColorHint="#d42e2e" />
+                android:textColorHint="#d42e2e"
+                android:onClick="onPasswordClick" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -202,26 +203,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign up"
-                android:id="@+id/newBuyerButton"
-                android:onClick="addNewBuyerOnClick"
-                android:layout_gravity="center_horizontal"
-                android:textColor="#ffffff"
-                android:background="@drawable/my_button"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="All the fields that are red must be filled in order to sign in"
-                android:id="@+id/textViewFields"
-                android:textColor="#52024d" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update"
+                    android:id="@+id/updateBuyerButton"
+                    android:layout_gravity="center_horizontal"
+                    android:onClick="onUpdateBuyerClick"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/my_button"/>
+
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:id="@+id/deletBuyerButton"
+                    android:onClick="onDeleteBuyerClick"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/my_button"/>
+            </LinearLayout>
+
 
         </LinearLayout>
-
     </ScrollView>
 </RelativeLayout>
 

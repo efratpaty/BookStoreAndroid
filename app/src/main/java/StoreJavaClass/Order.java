@@ -34,6 +34,11 @@ public class Order implements Serializable
         this.paymentSum = paymentSum;
         this.supplierId = supplierId;
     }
+
+    //default constructor
+    public Order() {
+    }
+
     //getters & setters
     public ArrayList<Integer> getBookId() {
         return bookId;

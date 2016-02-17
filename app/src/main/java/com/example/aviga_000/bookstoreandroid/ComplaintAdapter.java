@@ -64,7 +64,8 @@ public class ComplaintAdapter extends BaseAdapter {
         TextView complainantId = (TextView) vi.findViewById(R.id.idText1);
         TextView dId = (TextView) vi.findViewById(R.id.idText2);
 
-        for (Supplier s: backend.supplierList())
+        ArrayList<Supplier> _suppliers = backend.supplierList();
+        for (Supplier s: _suppliers)
         {
            if (s.getId() == data.get(position).getComplainantId())
            {
@@ -79,7 +80,8 @@ public class ComplaintAdapter extends BaseAdapter {
         }
 
         try {
-            for (Buyer s: backend.buyerList())
+            ArrayList <Buyer> _buyers = backend.buyerList();
+            for (Buyer s: _buyers)
             {
                 if (s.getId() == data.get(position).getComplainantId())
                 {

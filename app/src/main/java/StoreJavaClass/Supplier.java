@@ -20,6 +20,9 @@ public class Supplier extends Users implements Serializable
         this.supplierBookList = supplier.getSupplierBookList();
     }
 
+    public Supplier() {
+    }
+
     // getters&setters
     public List<SupplierBook> getSupplierBookList() {
         return supplierBookList;

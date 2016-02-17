@@ -14,11 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 import StoreJavaClass.Buyer;
 import StoreJavaClass.Supplier;
 import StoreJavaClass.SupplierBook;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
+import model.datasource.StoreMySql;
 
 public class EntranceActivity extends AppCompatActivity {
 
@@ -101,45 +104,55 @@ public class EntranceActivity extends AppCompatActivity {
     }
 
     public void userAuthentication(String userName, String password) throws Exception {
-        //search buyer list for username and password1 if found make intent buyer activity
-            for (Supplier s :backend.supplierList()) {
+
+        StoreMySql storeMySql = new StoreMySql(this);
+        ArrayList<Supplier> suppliers= storeMySql.supplierListForSignIn(userName,password,activity);
+        ArrayList<Buyer> buyers= storeMySql.buyerListForSignIn(userName, password, activity);
+
+        buyers.isEmpty();
+        suppliers.isEmpty();
+
+/*        //search buyer list for username and password1 if found make intent buy*//*er activity
+            for (Supplier s :suppliers) {
                 if (s.geteMail().equals(userName) && s.getPassword().equals(password)) {
                     intent = new Intent(activity, SupplierBooksActivity.class);
                     intent.putExtra("user_id", s.getId());
                     intent.putExtra("user", 2);
                     startActivity(intent);
 
-                }
-            }
+             }*/
+
+    /*        }
 
        //if user was not found, search buyer list for username and password1 if found make intent customer activity
-            for (Buyer b : backend.buyerList()) {
+            for (Buyer b : buyers) {
                 if (b.geteMail().equals(userName) && b.getPassword().equals(password)) {
                     intent = new Intent(activity, CustomerActivity.class);
                     intent.putExtra("user_id", b.getId());
                     intent.putExtra("user",1);
                     startActivity(intent);
 
+
+                //if user was not found, check if username and password1 belong to manger, if so make intent customer activity
+                if (backend.manager.geteMail().equals(userName) && backend.manager.getPassword().equals(password)) {
+                    intent = new Intent(activity, ManagerComplaintsActivity.class);
+                    intent.putExtra("user_id", backend.manager.getId());
+                    intent.putExtra("user",3);
+                    startActivity(intent);
                 }
+
+                else
+                {//if user not found open dialog to let user know the login failed
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("incorrect username or password1")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                }      */
+
+     }
             }
 
-         //if user was not found, check if username and password1 belong to manger, if so make intent customer activity
-             if (backend.manager.geteMail().equals(userName) && backend.manager.getPassword().equals(password)) {
-                intent = new Intent(activity, ManagerComplaintsActivity.class);
-                intent.putExtra("user_id", backend.manager.getId());
-                 intent.putExtra("user",3);
-                startActivity(intent);
-            }
 
-        else
-        {//if user not found open dialog to let user know the login failed
-            new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("ERROR")
-                    .setMessage("incorrect username or password1")
-                    .setPositiveButton("OK", null)
-                    .setIcon(android.R.drawable.stat_notify_error)
-                    .show();
-        }
-    }
-}

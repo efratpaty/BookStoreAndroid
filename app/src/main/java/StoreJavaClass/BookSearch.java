@@ -18,7 +18,8 @@ public class BookSearch implements Serializable
     private BookCondition bookCondition;//new/used/used-like new/all conditions
     private float maxPrice;//maximum price the client is willing to pay for the book
     private boolean sendMessage;//if the client want to receive a message in case the book was found
-    // default constructor
+
+    //constructor
     public BookSearch( int bookId, long customerId, String customerEmail, BookCondition bookCondition, float maxPrice, boolean sendMessage) {
         this.bookSearchId = count.incrementAndGet();
         this.dateOfRequest = Calendar.getInstance();
@@ -28,6 +29,11 @@ public class BookSearch implements Serializable
         this.bookCondition = bookCondition;
         this.maxPrice = maxPrice;
         this.sendMessage = sendMessage;
+    }
+
+    // default constructor
+    public BookSearch() {
+
     }
 
     //getters & setters

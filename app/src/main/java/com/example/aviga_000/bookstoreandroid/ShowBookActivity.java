@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import StoreJavaClass.Book;
 import StoreJavaClass.Subject;
 import StoreJavaClass.SupplierBook;
@@ -57,7 +59,8 @@ public class ShowBookActivity extends AppCompatActivity {
         TextView condition = (TextView)findViewById(R.id.conditionAutoCompleteTextView);
         ImageView imageView = (ImageView)findViewById(R.id.bookImageView);
 
-        for (SupplierBook sb : backend.supplierBookList()) {
+        ArrayList <SupplierBook> _supplierBooks  = backend.supplierBooks;
+        for (SupplierBook sb : _supplierBooks) {
 
             if (sb.getId() == supplierBookId) {
                 copies.setText(String.valueOf(sb.getCopies()));
@@ -75,7 +78,9 @@ public class ShowBookActivity extends AppCompatActivity {
 
             }
         }
-        for (Book b : backend.bookList()) {
+
+        ArrayList <Book> _books  = backend.books;
+        for (Book b : _books) {
 
             if (bookId == b.getBookId()) {
                 bookName.setText(b.getBookName());

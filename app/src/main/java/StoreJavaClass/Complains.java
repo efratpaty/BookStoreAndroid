@@ -23,6 +23,10 @@ public class Complains implements Serializable
         this.complaint = complaint;
     }
 
+    public Complains() {
+
+    }
+
     //getters&setters
     public int getComplaintId() {
         return complaintId;

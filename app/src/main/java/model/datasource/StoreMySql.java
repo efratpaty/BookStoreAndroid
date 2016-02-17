@@ -3,10 +3,17 @@ package model.datasource;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ParseException;
 import android.os.AsyncTask;
 import android.util.Log;
 
+
+import com.example.aviga_000.bookstoreandroid.BooksPoolActivity;
+import com.example.aviga_000.bookstoreandroid.CustomerActivity;
+import com.example.aviga_000.bookstoreandroid.EntranceActivity;
+import com.example.aviga_000.bookstoreandroid.ManagerComplaintsActivity;
+import com.example.aviga_000.bookstoreandroid.SupplierBooksActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +31,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import StoreJavaClass.Book;
 import StoreJavaClass.BookCondition;
@@ -160,10 +168,11 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Buyer> doInBackground(Void... voids) {
                     try {
                         Buyer tempBuyer;
+                        buyers.clear();
                         JSONArray buyersList = new JSONObject(GET(web_url + "getBuyersList.php")).getJSONArray("buyers");
                         for (int i = 0; i < buyersList.length(); i++) {
                             tempBuyer = new Buyer();
-                            tempBuyer.setId(buyersList.getJSONObject(i).getLong("id"));
+                            tempBuyer.setId(buyersList.getJSONObject(i).getLong("buyerId"));
                             tempBuyer.setFirstName(buyersList.getJSONObject(i).getString("firstName"));
                             tempBuyer.setLastName(buyersList.getJSONObject(i).getString("lastName"));
                             tempBuyer.setPassword(buyersList.getJSONObject(i).getString("password"));
@@ -180,7 +189,7 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return buyers;
+                    return null;
                 }
 
                 @Override
@@ -190,7 +199,7 @@ public class StoreMySql implements PoolFunctions {
                 @Override
                 protected void onPostExecute(ArrayList<Buyer> myBuyersList) {
                 }
-            }.execute();
+            };
         }
         catch (Exception e)
         {
@@ -249,20 +258,22 @@ public class StoreMySql implements PoolFunctions {
         }.execute();
     }
 
-    @Override
-    public ArrayList<Buyer> buyerList()throws Exception{
+
+    public ArrayList<Buyer> buyerListForSignIn(final String userName, final String password, final Activity activity)throws Exception{
 
         try {
             new AsyncTask<Void, Void, ArrayList<Buyer>>() {
 
                 @Override
                 protected ArrayList<Buyer> doInBackground(Void... voids) {
+
                     try {
                         Buyer tempBuyer;
+                        buyers.clear();
                         JSONArray buyersList = new JSONObject(GET(web_url + "getBuyersList.php")).getJSONArray("buyers");
                         for (int i = 0; i < buyersList.length(); i++) {
                             tempBuyer = new Buyer();
-                            tempBuyer.setId(buyersList.getJSONObject(i).getLong("id"));
+                            tempBuyer.setId(buyersList.getJSONObject(i).getLong("buyerId"));
                             tempBuyer.setFirstName(buyersList.getJSONObject(i).getString("firstName"));
                             tempBuyer.setLastName(buyersList.getJSONObject(i).getString("lastName"));
                             tempBuyer.setPassword(buyersList.getJSONObject(i).getString("password"));
@@ -279,17 +290,111 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return buyers;
+                    return null;
                 }
 
                 @Override
                 protected void onPreExecute() {
+
                 }
 
                 @Override
                 protected void onPostExecute(ArrayList<Buyer> myBuyersList) {
-                }
+                    Intent intent = null;
+
+                //if user was not found, search buyer list for username and password1 if found make intent buyer activity
+                    ArrayList<Buyer> _buyers = buyers;
+                    if (buyers != null) {
+                        for (Buyer b : _buyers) {
+                            if (b.geteMail().equals(userName) && b.getPassword().equals(password)) {
+                                intent = new Intent(activity, BooksPoolActivity.class);
+                                intent.putExtra("user_id", b.getId());
+                                intent.putExtra("user", 1);
+                                activity.startActivity(intent);
+
+                            }
+                        }
+                    }
+                            //if user was not found, check if username and password belong to manger, if so make intent manager activity
+                            if (manager.geteMail().equals(userName) && manager.getPassword().equals(password)) {
+                                intent = new Intent(activity, ManagerComplaintsActivity.class);
+                                intent.putExtra("user_id", manager.getId());
+                                intent.putExtra("user",3);
+                                activity.startActivity(intent);
+                            }
+
+                            else
+                            {//if user not found open dialog to let user know the login failed
+                                new AlertDialog.Builder(activity)
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setTitle("ERROR")
+                                        .setMessage("incorrect username or password1")
+                                        .setPositiveButton("OK", null)
+                                        .setIcon(android.R.drawable.stat_notify_error)
+                                        .show();
+                            }
+                        }
             }.execute();
+
+
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return buyers;
+    }
+
+
+    @Override
+    public ArrayList<Buyer> buyerList()throws Exception{
+
+        try {
+            new AsyncTask<Void, Void, ArrayList<Buyer>>() {
+
+                @Override
+                protected ArrayList<Buyer> doInBackground(Void... voids) {
+
+                    try {
+                        Buyer tempBuyer;
+                        buyers.clear();
+                        JSONArray buyersList = new JSONObject(GET(web_url + "getBuyersList.php")).getJSONArray("buyers");
+                        for (int i = 0; i < buyersList.length(); i++) {
+                            tempBuyer = new Buyer();
+                            tempBuyer.setId(buyersList.getJSONObject(i).getLong("buyerId"));
+                            tempBuyer.setFirstName(buyersList.getJSONObject(i).getString("firstName"));
+                            tempBuyer.setLastName(buyersList.getJSONObject(i).getString("lastName"));
+                            tempBuyer.setPassword(buyersList.getJSONObject(i).getString("password"));
+                            tempBuyer.setPhoneNumber(buyersList.getJSONObject(i).getLong("phoneNumber"));
+                            tempBuyer.seteMail(buyersList.getJSONObject(i).getString("eMail"));
+                            tempBuyer.setCity(buyersList.getJSONObject(i).getString("city"));
+                            tempBuyer.setStreet(buyersList.getJSONObject(i).getString("street"));
+                            tempBuyer.setBuildingNumber(buyersList.getJSONObject(i).getInt("buildingNumber"));
+                            tempBuyer.setHouseNumber(buyersList.getJSONObject(i).getString("houseNumber"));
+                            tempBuyer.setZipCode(buyersList.getJSONObject(i).getInt("zipCode"));
+
+                            buyers.add(tempBuyer);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPreExecute() {
+
+                }
+
+                @Override
+                protected void onPostExecute(ArrayList<Buyer> myBuyersList) {
+
+                }
+            }.execute().get();
+
+
+
         }
         catch (Exception e)
         {
@@ -380,6 +485,8 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<Book> doInBackground(Void... voids) {
                     try {
                         Book tempBook;
+                        books.clear();
+                        Book.count = new AtomicInteger(1000);
                         JSONArray booksList = new JSONObject(GET(web_url + "getBooksList.php")).getJSONArray("books");
                         for (int i = 0; i < booksList.length(); i++) {
                             JSONObject childJSONObject = booksList.getJSONObject(i);
@@ -429,7 +536,7 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return books;
+                    return null;
                 }
 
                 @Override
@@ -492,9 +599,9 @@ public class StoreMySql implements PoolFunctions {
                 protected final Void doInBackground(Void... params) {
                     Map<String,Object> _params = new LinkedHashMap<>();
                     _params.put("supplierId",supplier.getId());
+                    _params.put("password", supplier.getPassword());
                     _params.put("firstName", supplier.getFirstName());
                     _params.put("lastName", supplier.getLastName());
-                    _params.put("password", supplier.getPassword());
                     _params.put("phoneNumber", supplier.getPhoneNumber());
                     _params.put("eMail", supplier.geteMail());
                     _params.put("city", supplier.getCity());
@@ -578,13 +685,12 @@ public class StoreMySql implements PoolFunctions {
                 @Override
                 protected ArrayList<Supplier> doInBackground(Void... voids) {
                     try {
-                        if(android.os.Debug.isDebuggerConnected())
-                            android.os.Debug.waitForDebugger();
                         Supplier tempSupplier;
+                        suppliers.clear();
                         JSONArray suppliersList = new JSONObject(GET(web_url + "getSupplierList.php")).getJSONArray("supplier");
                         for (int i = 0; i < suppliersList.length(); i++) {
-                            tempSupplier = null;
-                            tempSupplier.setId(suppliersList.getJSONObject(i).getLong("id"));
+                            tempSupplier = new Supplier();
+                            tempSupplier.setId(suppliersList.getJSONObject(i).getLong("supplierId"));
                             tempSupplier.setFirstName(suppliersList.getJSONObject(i).getString("firstName"));
                             tempSupplier.setLastName(suppliersList.getJSONObject(i).getString("lastName"));
                             tempSupplier.setPassword(suppliersList.getJSONObject(i).getString("password"));
@@ -594,14 +700,14 @@ public class StoreMySql implements PoolFunctions {
                             tempSupplier.setStreet(suppliersList.getJSONObject(i).getString("street"));
                             tempSupplier.setBuildingNumber(suppliersList.getJSONObject(i).getInt("buildingNumber"));
                             tempSupplier.setHouseNumber(suppliersList.getJSONObject(i).getString("houseNumber"));
-                            tempSupplier.setZipCode(suppliersList.getJSONObject(i).getInt("zipCode"));
+                            tempSupplier.setZipCode(suppliersList.getJSONObject(i).getInt("zip"));
 
                             suppliers.add(tempSupplier);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return suppliers;
+                    return null;
                 }
 
                 @Override
@@ -620,6 +726,72 @@ public class StoreMySql implements PoolFunctions {
         return suppliers;
     }
 
+    public ArrayList<Supplier> supplierListForSignIn(final String userName, final String password, final Activity activity) {
+
+        try {
+            new AsyncTask<Void, Void, ArrayList<Supplier>>() {
+
+                @Override
+                protected ArrayList<Supplier> doInBackground(Void... voids) {
+                    try {
+                        Supplier tempSupplier;
+                        suppliers.clear();
+                        JSONArray suppliersList = new JSONObject(GET(web_url + "getSupplierList.php")).getJSONArray("supplier");
+                        for (int i = 0; i < suppliersList.length(); i++) {
+                            tempSupplier = new Supplier();
+                            tempSupplier.setId(suppliersList.getJSONObject(i).getLong("supplierId"));
+                            tempSupplier.setFirstName(suppliersList.getJSONObject(i).getString("firstName"));
+                            tempSupplier.setLastName(suppliersList.getJSONObject(i).getString("lastName"));
+                            tempSupplier.setPassword(suppliersList.getJSONObject(i).getString("password"));
+                            tempSupplier.setPhoneNumber(suppliersList.getJSONObject(i).getLong("phoneNumber"));
+                            tempSupplier.seteMail(suppliersList.getJSONObject(i).getString("eMail"));
+                            tempSupplier.setCity(suppliersList.getJSONObject(i).getString("city"));
+                            tempSupplier.setStreet(suppliersList.getJSONObject(i).getString("street"));
+                            tempSupplier.setBuildingNumber(suppliersList.getJSONObject(i).getInt("buildingNumber"));
+                            tempSupplier.setHouseNumber(suppliersList.getJSONObject(i).getString("houseNumber"));
+                            tempSupplier.setZipCode(suppliersList.getJSONObject(i).getInt("zip"));
+
+                            suppliers.add(tempSupplier);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPreExecute() {
+                }
+
+                @Override
+                protected void onPostExecute(ArrayList<Supplier> mySuppliersList) {
+                    //search suppliers list for username and password if found make intent supplier activity
+
+                    if (suppliers!= null)
+                    {
+                        Intent intent = null;
+
+                        for (Supplier s :suppliers) {
+                            String e = s.geteMail();
+                            String p = s.getPassword();
+                            if (e.equals(userName) && p.equals(password)) {
+                                intent = new Intent(activity, SupplierBooksActivity.class);
+                                intent.putExtra("user_id", s.getId());
+                                intent.putExtra("user", 2);
+                                activity.startActivity(intent);
+
+                            }
+                        }
+                    }
+                }
+            }.execute();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
     @Override
     public void addBookSupplier(final SupplierBook supplierBook) {
         try{
@@ -725,22 +897,25 @@ public class StoreMySql implements PoolFunctions {
                 protected ArrayList<SupplierBook> doInBackground(Void... voids) {
                     try {
                         SupplierBook tempSupplierBook;
-                        JSONArray supplierBooksList = new JSONObject(GET(web_url + "getSupplierBookList.php")).getJSONArray("supplierBooks");
+                        supplierBooks.clear();
+                        SupplierBook.count = new AtomicInteger(2000);//variable for auto generating id
+                        JSONArray supplierBooksList = new JSONObject(GET(web_url + "getSupplierBookList.php")).getJSONArray("supplierBook");
                         for (int i = 0; i < supplierBooksList.length(); i++) {
-                            tempSupplierBook = null;
+                            tempSupplierBook = new SupplierBook();
                             tempSupplierBook.setId(supplierBooksList.getJSONObject(i).getInt("supplierBook_id"));
                             tempSupplierBook.setBookId(supplierBooksList.getJSONObject(i).getInt("book_id"));
                             tempSupplierBook.setSupplierId(supplierBooksList.getJSONObject(i).getLong("supplier_id"));
                             tempSupplierBook.setCopies(supplierBooksList.getJSONObject(i).getInt("copies"));
                             tempSupplierBook.setPrice(supplierBooksList.getJSONObject(i).getDouble("price"));
-                            tempSupplierBook.setBookCondition(BookCondition.valueOf(supplierBooksList.getJSONObject(i).getString("condition")));
+
+                            tempSupplierBook.setBookCondition(BookCondition.valueOf(supplierBooksList.getJSONObject(i).getString("bookCondition")));
 
                             supplierBooks.add(tempSupplierBook);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return supplierBooks;
+                    return null;
                 }
 
                 @Override
@@ -855,7 +1030,7 @@ public class StoreMySql implements PoolFunctions {
                         Order tempOrder;
                         JSONArray ordersList = new JSONObject(GET(web_url + "getOrderList.php")).getJSONArray("orders");
                         for (int i = 0; i < ordersList.length(); i++) {
-                            tempOrder = null;
+                            tempOrder = new Order();
 
                             long tempSupplierId = 0L;
                             ArrayList<Long> tempSupplierIdList = new ArrayList<Long>();
@@ -897,7 +1072,7 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return orders;
+                    return null;
                 }
 
                 @Override
@@ -1040,7 +1215,7 @@ public class StoreMySql implements PoolFunctions {
                         BookSearch tempRequest;
                         JSONArray requestsList = new JSONObject(GET(web_url + "getSearchBookList.php")).getJSONArray("bookSearches");
                         for (int i = 0; i < requestsList.length(); i++) {
-                            tempRequest = null;
+                            tempRequest = new BookSearch();
                             tempRequest.setCustomerId(requestsList.getJSONObject(i).getLong("customer_id"));
                             tempRequest.setBookId(requestsList.getJSONObject(i).getInt("book_id"));
                             tempRequest.setCustomerEmail(requestsList.getJSONObject(i).getString("customerEmail"));
@@ -1057,7 +1232,7 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return bookSearchings;
+                    return null;
                 }
 
                 @Override
@@ -1184,7 +1359,7 @@ public class StoreMySql implements PoolFunctions {
                         Complains tempComplaint;
                         JSONArray complaintsList = new JSONObject(GET(web_url + "getComplaintsList.php")).getJSONArray("complaints");
                         for (int i = 0; i < complaintsList.length(); i++) {
-                            tempComplaint = null;
+                            tempComplaint = new Complains() ;
                             tempComplaint.setComplaintId(complaintsList.getJSONObject(i).getInt("complaint_id"));
                             tempComplaint.setComplainantId(complaintsList.getJSONObject(i).getLong("complainant_id"));
                             tempComplaint.setDefendantId(complaintsList.getJSONObject(i).getLong("defendant_id"));
@@ -1195,7 +1370,7 @@ public class StoreMySql implements PoolFunctions {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    return complainses;
+                    return null;
                 }
 
                 @Override

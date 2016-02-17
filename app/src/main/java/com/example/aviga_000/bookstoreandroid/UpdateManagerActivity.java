@@ -28,7 +28,7 @@ public class UpdateManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_manager);
     }
 
-    protected void onPasswordClick(View view) {// when user click on password1 alert dialog that ask him for his current password1 pops up
+    public void onPasswordClick(View view) {// when user click on password1 alert dialog that ask him for his current password1 pops up
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Please enter your current password1");
 // Set up the input

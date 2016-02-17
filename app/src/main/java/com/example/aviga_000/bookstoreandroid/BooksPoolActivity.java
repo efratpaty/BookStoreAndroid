@@ -70,8 +70,9 @@ public class BooksPoolActivity extends NavActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 Intent sbi = new Intent(BooksPoolActivity.this, SupplierBooksActivity.class);
-                sbi.putExtra("book_id", backend.books.get(position).getBookId());
-                sbi.putExtra("user_id", intentRecieve.getLongExtra("user_id", 0));
+                int bookId = backend.books.get(position).getBookId();
+                sbi.putExtra("book_id", bookId);
+                sbi.putExtra("user_id", userId);
                 sbi.putExtra("user", userType);
                 startActivity(sbi);
             }
@@ -127,6 +128,26 @@ public class BooksPoolActivity extends NavActivity {
                 intent.putExtra("user_id", userId);
                 intent.putExtra("user", userType);
                 break;
+
+            case R.id.my_books:
+                if (userType != 2)
+                {
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("ERROR")
+                            .setMessage("Sorry this option is only available to suppliers")
+                            .setPositiveButton("OK", null)
+                            .setIcon(android.R.drawable.stat_notify_error)
+                            .show();
+                    break;
+
+                }
+                else {
+                    intent = new Intent(BooksPoolActivity.this, SupplierBooksActivity.class);
+                    intent.putExtra("user_id", userId);
+                    intent.putExtra("user", userType);
+                    break;
+                }
 
             case R.id.cart:
                 if(userType == 0){

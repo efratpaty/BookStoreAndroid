@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 import StoreJavaClass.Complains;
 import model.backend.PoolFunctions;
 import model.datasource.BackendFactory;
@@ -48,8 +50,10 @@ public class AddComplaintActivity extends AppCompatActivity {
         }
         //check if such person exist in the system
         boolean flag = false;
+
+        ArrayList<Long> _customersIds = backend.customersId();
         while (flag != true)
-            for (Long id: backend.customersId()) {
+            for (Long id: _customersIds) {
                 if (id == complainantId)
                     flag = true;
             }
@@ -82,7 +86,7 @@ public class AddComplaintActivity extends AppCompatActivity {
         //check if such person exist in the system
         flag = false;
         while (flag != true)
-            for (Long id: backend.customersId()) {
+            for (Long id: _customersIds) {
                 if (id == defendantId)
                     flag = true;
             }

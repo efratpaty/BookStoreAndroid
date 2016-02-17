@@ -52,7 +52,8 @@ public class BookRequestsActivity extends NavActivity {
         ArrayList<BookSearch> requests = _backend.bookSearchList();//get all requests
         addListItems(requests);//send to func to set requests list items
 
-        for (Book book: _backend.bookList()) {
+        ArrayList <Book> _books = _backend.books;
+        for (Book book:_books ) {
             bookNames.add(book.getBookName());
             authorsNames.add(book.getAuthor());
         }

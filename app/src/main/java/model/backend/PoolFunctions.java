@@ -38,7 +38,7 @@ public interface PoolFunctions
     void addBuyer(Buyer buyer);
     void updateBuyer(Buyer buyer);
     void deleteBuyer(Buyer buyer);
-    List<Buyer> buyerList() throws Exception;
+    ArrayList<Buyer> buyerList() throws Exception;
 
     //book
     void addBook(Book book) throws IOException;
